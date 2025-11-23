@@ -5,18 +5,10 @@ import (
 	"kubescope-backend/src/handlers"
 	"kubescope-backend/src/k8s"
 	"kubescope-backend/src/server"
-	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading environment variables!")
-	}
-
 	manager := k8s.NewManager()
 	podHandler := handlers.PodHandler{K8s: manager}
 	nodeHandler := handlers.NodeHandler{K8s: manager}
@@ -30,7 +22,8 @@ func main() {
 	}
 	var PORT = os.Getenv("PORT")
 	if PORT == "" {
-		PORT = "8080"
+		PORT = "8088"
 	}
-	r.Run(fmt.Sprintf("%s:%s", HOST, PORT))
+	server := fmt.Sprintf("%s:%s", HOST, PORT)
+	r.Run(server)
 }
