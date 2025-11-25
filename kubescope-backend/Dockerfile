@@ -15,9 +15,12 @@ RUN go mod download
 # Copy source
 COPY . .
 
+# Only un-comment these if you want to modify the port (and host)
+# ENV HOST localhost
+# ENV PORT 8088
+
 # Build binary (static)
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
-
 
 # --------------------------------------------------
 # 2. Final runtime image
@@ -25,7 +28,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
 FROM alpine:3.22.2
 
 # Create user (non-root)
-RUN adduser -D appuser
+RUN adduser -D tonyq
 
 WORKDIR /app
 
@@ -33,9 +36,9 @@ WORKDIR /app
 COPY --from=builder /app/server .
 
 # Use unprivileged user
-USER appuser
+USER tonyq
 
-# Expose port your Go server listens on
+# Expose port
 EXPOSE 8088
 
 CMD ["./server"]
