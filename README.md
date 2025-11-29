@@ -17,5 +17,6 @@ Built with ReactJS and client-go.
 + In-cluster authentication using ServiceAccount/RBAC
 
 ### Front-end (ReactJS)
++ WIP
 + Display information
 + Use TailwindCSS and ChartJS for visual appealing UI
