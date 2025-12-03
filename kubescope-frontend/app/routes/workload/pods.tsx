@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { getPods } from "~/api";
-import { fakePods } from "~/data/index"
+import { ChevronDown, Server } from "lucide-react";
+// import { fakePods } from "~/data/index"
 
 function Pods() {
     const [pods, setPods] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [namespace, setNamespace] = useState("default");
+    const [namespaces, setNamespaces] = useState<string[]>([
+      "default",
+      "kube-system"
+    ])
+    const [currentNs, setCurrentNS] = useState("default");
 
     useEffect(() => {
         fetchPods();
@@ -15,8 +20,8 @@ function Pods() {
         try {
             setLoading(true);
             // Replace this with your Go backend call
-            // const data = await getPods(namespace);
-            const data = fakePods;
+            // const data = fakePods;
+            const data = await getPods(currentNs);
             console.log(data);
             setPods(data);
         } catch (err) {
@@ -93,7 +98,23 @@ function Pods() {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Pods</h2>
         <div>
-          <p>{`${pods.length} Items`}</p>
+          <p className="text-lg">{`${pods.length} Items`}</p>
+        </div>
+        {/* ---- Namespace Selector ---- */}
+        <div className="relative min-w-6">
+          <select
+            value={currentNs}
+            onChange={(e) => setCurrentNS(e.target.value)}
+            className="w-full sm:w-[280px] md:w-[320px] pl-3 pr-10 py-2.5 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer transition-colors"
+          >
+            <option value="all">All Namespaces</option>
+            {namespaces.map((ns) => (
+              <option key={ns} value={ns}>
+                {ns}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
       </div>
 
