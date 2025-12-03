@@ -1,12 +1,8 @@
-const BASE = 'http://localhost:8088'
-
-
 export async function getJSON(path: string) {
-    const res = await fetch(`${BASE}${path}`, { credentials: 'same-origin' })
+    const res = await fetch(path)
     if (!res.ok) throw new Error(await res.text())
     return res.json()
 }
-
 
 export function getPods(namespace = 'default'){
     return getJSON(`/api/pods?namespace=${encodeURIComponent(namespace)}`)

@@ -7,7 +7,7 @@
 
 html,
 body {
-  @apply flex h-screen bg-gray-950 text-gray-200;
+  @apply flex h-screen w-screen bg-gray-950 text-gray-100;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;

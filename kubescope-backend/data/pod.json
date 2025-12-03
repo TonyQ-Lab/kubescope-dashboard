@@ -1,0 +1,355 @@
+[
+    {
+    "metadata": {
+        "name": "kubescope-backend-5d7695fddb-s8gxq",
+        "generateName": "kubescope-backend-5d7695fddb-",
+        "namespace": "kubescope-dashboard",
+        "uid": "41cd2aac-eabf-4b12-821f-7be182ac7cca",
+        "resourceVersion": "13504",
+        "generation": 1,
+        "creationTimestamp": "2025-11-25T13:56:18Z",
+        "labels": {
+        "app": "kubescope-backend",
+        "pod-template-hash": "5d7695fddb"
+        },
+        "ownerReferences": [
+        {
+            "apiVersion": "apps/v1",
+            "kind": "ReplicaSet",
+            "name": "kubescope-backend-5d7695fddb",
+            "uid": "de0c0f37-eb65-457d-a913-8d4f312062ac",
+            "controller": true,
+            "blockOwnerDeletion": true
+        }
+        ],
+        "managedFields": [
+        {
+            "manager": "kube-controller-manager",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2025-11-25T13:56:18Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+            "f:metadata": {
+                "f:generateName": {},
+                "f:labels": {
+                ".": {},
+                "f:app": {},
+                "f:pod-template-hash": {}
+                },
+                "f:ownerReferences": {
+                ".": {},
+                "k:{\"uid\":\"de0c0f37-eb65-457d-a913-8d4f312062ac\"}": {}
+                }
+            },
+            "f:spec": {
+                "f:containers": {
+                "k:{\"name\":\"backend\"}": {
+                    ".": {},
+                    "f:image": {},
+                    "f:imagePullPolicy": {},
+                    "f:name": {},
+                    "f:ports": {
+                    ".": {},
+                    "k:{\"containerPort\":8088,\"protocol\":\"TCP\"}": {
+                        ".": {},
+                        "f:containerPort": {},
+                        "f:protocol": {}
+                    }
+                    },
+                    "f:resources": {
+                    ".": {},
+                    "f:limits": {
+                        ".": {},
+                        "f:cpu": {},
+                        "f:memory": {}
+                    },
+                    "f:requests": {
+                        ".": {},
+                        "f:cpu": {},
+                        "f:memory": {}
+                    }
+                    },
+                    "f:terminationMessagePath": {},
+                    "f:terminationMessagePolicy": {}
+                }
+                },
+                "f:dnsPolicy": {},
+                "f:enableServiceLinks": {},
+                "f:restartPolicy": {},
+                "f:schedulerName": {},
+                "f:securityContext": {},
+                "f:serviceAccount": {},
+                "f:serviceAccountName": {},
+                "f:terminationGracePeriodSeconds": {}
+            }
+            }
+        },
+        {
+            "manager": "kubelet",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2025-11-30T01:45:46Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+            "f:status": {
+                "f:conditions": {
+                "k:{\"type\":\"ContainersReady\"}": {
+                    ".": {},
+                    "f:lastProbeTime": {},
+                    "f:lastTransitionTime": {},
+                    "f:observedGeneration": {},
+                    "f:status": {},
+                    "f:type": {}
+                },
+                "k:{\"type\":\"Initialized\"}": {
+                    ".": {},
+                    "f:lastProbeTime": {},
+                    "f:lastTransitionTime": {},
+                    "f:observedGeneration": {},
+                    "f:status": {},
+                    "f:type": {}
+                },
+                "k:{\"type\":\"PodReadyToStartContainers\"}": {
+                    ".": {},
+                    "f:lastProbeTime": {},
+                    "f:lastTransitionTime": {},
+                    "f:observedGeneration": {},
+                    "f:status": {},
+                    "f:type": {}
+                },
+                "k:{\"type\":\"PodScheduled\"}": {
+                    "f:observedGeneration": {}
+                },
+                "k:{\"type\":\"Ready\"}": {
+                    ".": {},
+                    "f:lastProbeTime": {},
+                    "f:lastTransitionTime": {},
+                    "f:observedGeneration": {},
+                    "f:status": {},
+                    "f:type": {}
+                }
+                },
+                "f:containerStatuses": {},
+                "f:hostIP": {},
+                "f:hostIPs": {},
+                "f:observedGeneration": {},
+                "f:phase": {},
+                "f:podIP": {},
+                "f:podIPs": {
+                ".": {},
+                "k:{\"ip\":\"10.244.0.8\"}": {
+                    ".": {},
+                    "f:ip": {}
+                }
+                },
+                "f:startTime": {}
+            }
+            },
+            "subresource": "status"
+        }
+        ]
+    },
+    "spec": {
+        "volumes": [
+        {
+            "name": "kube-api-access-rltd6",
+            "projected": {
+            "sources": [
+                {
+                "serviceAccountToken": {
+                    "expirationSeconds": 3607,
+                    "path": "token"
+                }
+                },
+                {
+                "configMap": {
+                    "name": "kube-root-ca.crt",
+                    "items": [
+                    {
+                        "key": "ca.crt",
+                        "path": "ca.crt"
+                    }
+                    ]
+                }
+                },
+                {
+                "downwardAPI": {
+                    "items": [
+                    {
+                        "path": "namespace",
+                        "fieldRef": {
+                        "apiVersion": "v1",
+                        "fieldPath": "metadata.namespace"
+                        }
+                    }
+                    ]
+                }
+                }
+            ],
+            "defaultMode": 420
+            }
+        }
+        ],
+        "containers": [
+        {
+            "name": "backend",
+            "image": "tonyq2k3/kubescope-backend:0.0.1",
+            "ports": [
+            {
+                "containerPort": 8088,
+                "protocol": "TCP"
+            }
+            ],
+            "resources": {
+            "limits": {
+                "cpu": "500m",
+                "memory": "512Mi"
+            },
+            "requests": {
+                "cpu": "250m",
+                "memory": "256Mi"
+            }
+            },
+            "volumeMounts": [
+            {
+                "name": "kube-api-access-rltd6",
+                "readOnly": true,
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+            }
+            ],
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "IfNotPresent"
+        }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "serviceAccountName": "kubescope-account",
+        "serviceAccount": "kubescope-account",
+        "nodeName": "minikube",
+        "securityContext": {},
+        "schedulerName": "default-scheduler",
+        "tolerations": [
+        {
+            "key": "node.kubernetes.io/not-ready",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+        },
+        {
+            "key": "node.kubernetes.io/unreachable",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+        }
+        ],
+        "priority": 0,
+        "enableServiceLinks": true,
+        "preemptionPolicy": "PreemptLowerPriority"
+    },
+    "status": {
+        "observedGeneration": 1,
+        "phase": "Running",
+        "conditions": [
+        {
+            "type": "PodReadyToStartContainers",
+            "observedGeneration": 1,
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2025-11-30T01:45:46Z"
+        },
+        {
+            "type": "Initialized",
+            "observedGeneration": 1,
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2025-11-25T13:56:18Z"
+        },
+        {
+            "type": "Ready",
+            "observedGeneration": 1,
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2025-11-30T01:45:46Z"
+        },
+        {
+            "type": "ContainersReady",
+            "observedGeneration": 1,
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2025-11-30T01:45:46Z"
+        },
+        {
+            "type": "PodScheduled",
+            "observedGeneration": 1,
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2025-11-25T13:56:18Z"
+        }
+        ],
+        "hostIP": "192.168.49.2",
+        "hostIPs": [
+        {
+            "ip": "192.168.49.2"
+        }
+        ],
+        "podIP": "10.244.0.8",
+        "podIPs": [
+        {
+            "ip": "10.244.0.8"
+        }
+        ],
+        "startTime": "2025-11-25T13:56:18Z",
+        "containerStatuses": [
+        {
+            "name": "backend",
+            "state": {
+            "running": {
+                "startedAt": "2025-11-30T01:45:45Z"
+            }
+            },
+            "lastState": {
+            "terminated": {
+                "exitCode": 2,
+                "reason": "Error",
+                "startedAt": "2025-11-25T13:56:32Z",
+                "finishedAt": "2025-11-25T14:01:54Z",
+                "containerID": "docker://d9a159e542e7148480692fa58d954514c4137a7181786ea9bfe14f3071d900d6"
+            }
+            },
+            "ready": true,
+            "restartCount": 1,
+            "image": "tonyq2k3/kubescope-backend:0.0.1",
+            "imageID": "docker-pullable://tonyq2k3/kubescope-backend@sha256:442f704d5bd7495999ea597f3592c43a98449e2b5b93d928a22cfa42793eb211",
+            "containerID": "docker://e5b3118faeeeb1ce578f382fefa08ba85a3f6ed332b98510fe91bf248e166010",
+            "started": true,
+            "allocatedResources": {
+            "cpu": "250m",
+            "memory": "256Mi"
+            },
+            "resources": {
+            "limits": {
+                "cpu": "500m",
+                "memory": "512Mi"
+            },
+            "requests": {
+                "cpu": "250m",
+                "memory": "256Mi"
+            }
+            },
+            "volumeMounts": [
+            {
+                "name": "kube-api-access-rltd6",
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                "readOnly": true,
+                "recursiveReadOnly": "Disabled"
+            }
+            ]
+        }
+        ],
+        "qosClass": "Burstable"
+    }
+    }
+]
