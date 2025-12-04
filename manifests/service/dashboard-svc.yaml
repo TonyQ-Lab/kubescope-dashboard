@@ -10,3 +10,18 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8088
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubescope-frontend
+  namespace: kubescope-dashboard
+spec:
+  selector:
+    app: kubescope-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
