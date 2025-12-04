@@ -6,13 +6,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(podHandler *handlers.PodHandler, nodeHandler *handlers.NodeHandler, metricHandler *handlers.MetricsHandler) *gin.Engine {
+func NewRouter(
+	workloadHandler *handlers.WorkloadHandler,
+	nodeHandler *handlers.NodeHandler,
+	namespaceHandler *handlers.NamespaceHandler,
+	metricHandler *handlers.MetricsHandler,
+) *gin.Engine {
 	r := gin.Default()
 
 	api := r.Group("/api")
 	{
-		api.GET("/pods", podHandler.HandleGetPods)
 		api.GET("/nodes", nodeHandler.HandleGetNodes)
+		api.GET("/namespaces", namespaceHandler.HandleGetNamespaces)
+		api.GET("/pods", workloadHandler.HandleGetPods)
+		api.GET("/deployments", workloadHandler.HandleGetDeployments)
+		api.GET("/daemonsets", workloadHandler.HandleGetDaemonSets)
+		api.GET("/replicasets", workloadHandler.HandleGetReplicaSets)
+		api.GET("/statefulsets", workloadHandler.HandleGetStatefulSets)
 	}
 
 	return r
