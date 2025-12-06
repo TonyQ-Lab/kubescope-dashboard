@@ -15,16 +15,20 @@ rules:
 - apiGroups: [""]
   resources:
   - pods
+  - namespaces
   - services
   - nodes
   - configmaps
   - secrets
-  verbs: ["get", "watch", "list"]
+  verbs: ["get", "watch", "list", "create", "delete", "update", "patch"]
 - apiGroups:
   - apps
   resources:
   - deployments
-  verbs: ["get", "watch", "list"]
+  - statefulsets
+  - daemonsets
+  - replicasets
+  verbs: ["get", "watch", "list", "create", "delete", "update", "patch"]
 
 ---
 
