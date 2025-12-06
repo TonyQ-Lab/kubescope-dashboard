@@ -1,4 +1,4 @@
-export async function getJSON(path: string) {
+export async function getJSON(path) {
     const res = await fetch(path)
     if (!res.ok) throw new Error(await res.text())
     return res.json()
@@ -6,6 +6,10 @@ export async function getJSON(path: string) {
 
 export function getPods(namespace = 'default'){
     return getJSON(`/api/pods?namespace=${encodeURIComponent(namespace)}`)
+}
+
+export function getNamespaces() {
+    return getJSON('/api/namespaces')
 }
 
 

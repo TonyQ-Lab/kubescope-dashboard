@@ -1,38 +1,53 @@
 import { useEffect, useState } from "react";
-import { getPods } from "~/api";
+import { getNamespaces, getPods } from "../api/index";
 import { ChevronDown, Server } from "lucide-react";
-// import { fakePods } from "~/data/index"
 
-function Pods() {
-    const [pods, setPods] = useState<any[]>([]);
+function PodsPage() {
+    const [pods, setPods] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [namespaces, setNamespaces] = useState<string[]>([
+    const [namespaces, setNamespaces] = useState([
       "default",
       "kube-system"
     ])
     const [currentNs, setCurrentNS] = useState("default");
 
     useEffect(() => {
-        fetchPods();
+      fetchNamespaces();
+      fetchPods();
     }, [])
 
     async function fetchPods() {
-        try {
-            setLoading(true);
-            // Replace this with your Go backend call
-            // const data = fakePods;
-            const data = await getPods(currentNs);
-            console.log(data);
-            setPods(data);
-        } catch (err) {
-            console.error("Failed to fetch pods:", err);
-        } finally {
-            setLoading(false);
-        }
+      try {
+          setLoading(true);
+          // Replace this with your Go backend call
+          const data = await getPods(currentNs);
+          console.log(data);
+          setPods(data);
+      } catch (err) {
+          console.error("Failed to fetch pods:", err);
+      } finally {
+          setLoading(false);
+      }
     }
 
-    function countReady(pod: any): number {
-      let ready: number = 0;
+    async function fetchNamespaces() {
+      let nslist = [];
+      try {
+          setLoading(true);
+          const data = await getNamespaces();
+          data.map((ns) => {
+            nslist.push(ns.metadata.name)
+          })
+          // setNamespaces(data);
+      } catch (err) {
+          console.error("Failed to fetch pods:", err);
+      } finally {
+          setLoading(false);
+      }
+    }
+
+    function countReady(pod){
+      let ready = 0;
       for (const container of pod.status.containerStatuses) {
         if (container.ready === true) {
           ready ++;
@@ -41,15 +56,15 @@ function Pods() {
       return ready;
     }
 
-    function countRestart(pod: any): number {
-      let restart: number = 0;
+    function countRestart(pod){
+      let restart = 0;
       for (const container of pod.status.containerStatuses) {
         restart += container.restartCount;
       }
       return restart;
     }
 
-    function countAge(pod: any): string {
+    function countAge(pod) {
       const now = new Date();
       const pastTimestamp = new Date(pod.metadata.creationTimestamp);
 
@@ -79,7 +94,7 @@ function Pods() {
       }
     }
 
-    function statusColor(status: string) {
+    function statusColor(status) {
         switch (status) {
             case "Running":
                 return "bg-green-500/20 text-green-400";
@@ -130,7 +145,7 @@ function Pods() {
                 <th className="px-4 py-3">Namespace</th>
                 <th className="px-4 py-3">Ready</th>
                 <th className="px-4 py-3">Restarts</th>
-                <th className="px-4 py-3">Controller</th>
+                {/* <th className="px-4 py-3">Controller</th> */}
                 <th className="px-4 py-3">Age</th>
                 <th className="px-4 py-3">Status</th>
               </tr>
@@ -143,7 +158,7 @@ function Pods() {
                   <td className="px-4 py-3 font-medium">{pod.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{`${countReady(pod)}/${pod.status.containerStatuses.length}`}</td>
                   <td className="px-4 py-3 text-gray-400">{countRestart(pod)}</td>
-                  <td className="px-4 py-3 text-gray-400">{pod.metadata.ownerReferences[0].kind}</td>
+                  {/* <td className="px-4 py-3 text-gray-400">{pod.metadata.ownerReferences[0].kind}</td> */}
                   <td className="px-4 py-3 text-gray-400">{countAge(pod)}</td>
                   <td className="px-4 py-3">
                     <span
@@ -164,4 +179,4 @@ function Pods() {
     );
 }
 
-export default Pods;
+export default PodsPage;

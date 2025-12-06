@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
@@ -7,7 +9,7 @@
 
 html,
 body {
-  @apply flex h-screen w-screen bg-gray-950 text-gray-100;
+  @apply h-screen w-screen bg-gray-950 text-gray-100;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
