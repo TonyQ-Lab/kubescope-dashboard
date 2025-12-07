@@ -6,23 +6,29 @@ function PodsPage() {
     const [pods, setPods] = useState([]);
     const [loading, setLoading] = useState(true);
     const [namespaces, setNamespaces] = useState([
-      "default",
-      "kube-system"
+      "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
 
     useEffect(() => {
       fetchNamespaces();
-      fetchPods();
     }, [])
+
+    useEffect(() => {
+      fetchPods();
+    }, [currentNs])
 
     async function fetchPods() {
       try {
           setLoading(true);
           // Replace this with your Go backend call
           const data = await getPods(currentNs);
-          console.log(data);
-          setPods(data);
+          // console.log(data);
+          if (data !== null) {
+            setPods(data);
+          } else {
+            setPods([]);
+          }
       } catch (err) {
           console.error("Failed to fetch pods:", err);
       } finally {
@@ -38,9 +44,10 @@ function PodsPage() {
           data.map((ns) => {
             nslist.push(ns.metadata.name)
           })
-          // setNamespaces(data);
+          // console.log(nslist);
+          setNamespaces(nslist);
       } catch (err) {
-          console.error("Failed to fetch pods:", err);
+          console.error("Failed to fetch namespaces:", err);
       } finally {
           setLoading(false);
       }
@@ -145,7 +152,7 @@ function PodsPage() {
                 <th className="px-4 py-3">Namespace</th>
                 <th className="px-4 py-3">Ready</th>
                 <th className="px-4 py-3">Restarts</th>
-                {/* <th className="px-4 py-3">Controller</th> */}
+                <th className="px-4 py-3">Controller</th>
                 <th className="px-4 py-3">Age</th>
                 <th className="px-4 py-3">Status</th>
               </tr>
@@ -158,7 +165,9 @@ function PodsPage() {
                   <td className="px-4 py-3 font-medium">{pod.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{`${countReady(pod)}/${pod.status.containerStatuses.length}`}</td>
                   <td className="px-4 py-3 text-gray-400">{countRestart(pod)}</td>
-                  {/* <td className="px-4 py-3 text-gray-400">{pod.metadata.ownerReferences[0].kind}</td> */}
+                  <td className="px-4 py-3 text-gray-400">{
+                    pod.metadata.ownerReferences ? pod.metadata.ownerReferences[0].kind : 'None'
+                  }</td>
                   <td className="px-4 py-3 text-gray-400">{countAge(pod)}</td>
                   <td className="px-4 py-3">
                     <span

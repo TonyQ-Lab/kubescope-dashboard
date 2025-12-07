@@ -8,6 +8,22 @@ export function getPods(namespace = 'default'){
     return getJSON(`/api/pods?namespace=${encodeURIComponent(namespace)}`)
 }
 
+export function getDeployments(namespace = 'default'){
+    return getJSON(`/api/deployments?namespace=${encodeURIComponent(namespace)}`)
+}
+
+export function getReplicaSets(namespace = 'default'){
+    return getJSON(`/api/replicasets?namespace=${encodeURIComponent(namespace)}`)
+}
+
+export function getStatefulSets(namespace = 'default'){
+    return getJSON(`/api/statefulsets?namespace=${encodeURIComponent(namespace)}`)
+}
+
+export function getDaemonSets(namespace = 'default'){
+    return getJSON(`/api/daemonsets?namespace=${encodeURIComponent(namespace)}`)
+}
+
 export function getNamespaces() {
     return getJSON('/api/namespaces')
 }
