@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { getNamespaces, getPods } from "../api/index";
+import { getNamespaces, getReplicaSets } from "../api/index";
 import { ChevronDown } from "lucide-react";
+import { countAge } from "../utils";
 
-function PodsPage() {
-    const [pods, setPods] = useState([]);
+export default function ReplicasPage() {
+    const [replicasets, setReplicaSets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [namespaces, setNamespaces] = useState([
       "default"
@@ -15,22 +16,22 @@ function PodsPage() {
     }, [])
 
     useEffect(() => {
-      fetchPods();
+      fetchReplicaSets();
     }, [currentNs])
 
-    async function fetchPods() {
+    async function fetchReplicaSets() {
       try {
           setLoading(true);
           // Replace this with your Go backend call
-          const data = await getPods(currentNs);
+          const data = await getReplicaSets(currentNs);
           // console.log(data);
           if (data !== null) {
-            setPods(data);
+            setReplicaSets(data);
           } else {
-            setPods([]);
+            setReplicaSets([]);
           }
       } catch (err) {
-          console.error("Failed to fetch pods:", err);
+          console.error("Failed to fetch ReplicaSets:", err);
       } finally {
           setLoading(false);
       }
@@ -53,74 +54,29 @@ function PodsPage() {
       }
     }
 
-    function countReady(pod){
-      let ready = 0;
-      for (const container of pod.status.containerStatuses) {
-        if (container.ready === true) {
-          ready ++;
-        }
-      }
-      return ready;
-    }
-
-    function countRestart(pod){
-      let restart = 0;
-      for (const container of pod.status.containerStatuses) {
-        restart += container.restartCount;
-      }
-      return restart;
-    }
-
-    function countAge(pod) {
-      const now = new Date();
-      const pastTimestamp = new Date(pod.metadata.creationTimestamp);
-
-      const timeDifference = now.getTime() - pastTimestamp.getTime();
-      const seconds = Math.floor(timeDifference / 1000);
-      const minutes = Math.floor(seconds / 60);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
-      const weeks = Math.floor(days / 7);
-      const months = Math.floor(days / 30);
-      const years = Math.floor(days / 365);
-
-      if (years > 0) {
-          return `${years}y`;
-      } else if (months > 0) {
-          return `${months}m`;
-      } else if (weeks > 0) {
-          return `${weeks}w`;
-      } else if (days > 0) {
-          return `${days}d`;
-      } else if (hours > 0) {
-          return `${hours}h`;
-      } else if (minutes > 0) {
-          return `${minutes}m`;
-      } else {
-          return `${seconds}s`;
-      }
-    }
-
     function statusColor(status) {
       switch (status) {
         case "Running":
+        case "Available":
             return "bg-green-500/20 text-green-400";
         case "Pending":
+        case "Progressing":
             return "bg-yellow-500/20 text-yellow-400";
         case "CrashLoopBackOff":
+        case "ReplicaFailure":
             return "bg-red-500/20 text-red-400";
         default:
             return "bg-gray-500/20 text-gray-400";
       }
     }
 
-    return ( 
+    return (
     <div className="space-y-6 p-4 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Pods</h2>
+        <h2 className="text-2xl font-semibold">ReplicaSets</h2>
         <div>
-          <p className="text-lg">{`${pods.length} Items`}</p>
+          <p className="text-lg">{`${replicasets.length} Items`}</p>
         </div>
         {/* ---- Namespace Selector ---- */}
         <div className="relative min-w-6">
@@ -142,7 +98,7 @@ function PodsPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading pods...</p>
+        <p className="text-gray-400">Loading ReplicaSets...</p>
       ) : (
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-sm min-w-max">
@@ -150,34 +106,26 @@ function PodsPage() {
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Namespace</th>
-                <th className="px-4 py-3">Ready</th>
-                <th className="px-4 py-3">Restarts</th>
                 <th className="px-4 py-3">Controller</th>
+                <th className="px-4 py-3">Revision</th>
+                <th className="px-4 py-3">Ready</th>
+                <th className="px-4 py-3">Available</th>
                 <th className="px-4 py-3">Age</th>
-                <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {pods.map((pod) => (
-                <tr key={`${pod.metadata.name}`} className="hover:bg-gray-800/50">
-                  <td className="px-4 py-3 font-medium">{pod.metadata.name}</td>
-                  <td className="px-4 py-3 font-medium">{pod.metadata.namespace}</td>
-                  <td className="px-4 py-3 text-gray-400">{`${countReady(pod)}/${pod.status.containerStatuses.length}`}</td>
-                  <td className="px-4 py-3 text-gray-400">{countRestart(pod)}</td>
+              {replicasets.map((replicaset) => (
+                <tr key={`${replicaset.metadata.name}`} className="hover:bg-gray-800/50">
+                  <td className="px-4 py-3 font-medium">{replicaset.metadata.name}</td>
+                  <td className="px-4 py-3 font-medium">{replicaset.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{
-                    pod.metadata.ownerReferences ? pod.metadata.ownerReferences[0].kind : 'None'
+                    replicaset.metadata.ownerReferences ? replicaset.metadata.ownerReferences[0].kind : 'None'
                   }</td>
-                  <td className="px-4 py-3 text-gray-400">{countAge(pod)}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`px-2 py-1 rounded-md text-xs font-medium ${statusColor(
-                        pod.status.phase
-                      )}`}
-                    >
-                      {pod.status.phase}
-                    </span>
-                  </td>
+                  <td className="px-4 py-3 font-medium">{replicaset.metadata.annotations["deployment.kubernetes.io/revision"]}</td>
+                  <td className="px-4 py-3 text-gray-400">{`${replicaset.status.readyReplicas || 0}/${replicaset.spec.replicas}`}</td>
+                  <td className="px-4 py-3 text-gray-400">{replicaset.status.availableReplicas || 0}</td>
+                  <td className="px-4 py-3 text-gray-400">{countAge(replicaset)}</td>
                 </tr>
               ))}
             </tbody>
@@ -187,5 +135,3 @@ function PodsPage() {
     </div>
     );
 }
-
-export default PodsPage;

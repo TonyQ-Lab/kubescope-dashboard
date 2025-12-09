@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getNamespaces, getPods } from "../api/index";
+import { getNamespaces, getDeployments } from "../api/index";
 import { ChevronDown } from "lucide-react";
 
-function PodsPage() {
-    const [pods, setPods] = useState([]);
+export default function DeploysPage() {
+    const [deployments, setDeployments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [namespaces, setNamespaces] = useState([
       "default"
@@ -15,19 +15,19 @@ function PodsPage() {
     }, [])
 
     useEffect(() => {
-      fetchPods();
+      fetchDeployments();
     }, [currentNs])
 
-    async function fetchPods() {
+    async function fetchDeployments() {
       try {
           setLoading(true);
           // Replace this with your Go backend call
-          const data = await getPods(currentNs);
+          const data = await getDeployments(currentNs);
           // console.log(data);
           if (data !== null) {
-            setPods(data);
+            setDeployments(data);
           } else {
-            setPods([]);
+            setDeployments([]);
           }
       } catch (err) {
           console.error("Failed to fetch pods:", err);
@@ -53,27 +53,9 @@ function PodsPage() {
       }
     }
 
-    function countReady(pod){
-      let ready = 0;
-      for (const container of pod.status.containerStatuses) {
-        if (container.ready === true) {
-          ready ++;
-        }
-      }
-      return ready;
-    }
-
-    function countRestart(pod){
-      let restart = 0;
-      for (const container of pod.status.containerStatuses) {
-        restart += container.restartCount;
-      }
-      return restart;
-    }
-
-    function countAge(pod) {
+    function countAge(deployment) {
       const now = new Date();
-      const pastTimestamp = new Date(pod.metadata.creationTimestamp);
+      const pastTimestamp = new Date(deployment.metadata.creationTimestamp);
 
       const timeDifference = now.getTime() - pastTimestamp.getTime();
       const seconds = Math.floor(timeDifference / 1000);
@@ -104,23 +86,48 @@ function PodsPage() {
     function statusColor(status) {
       switch (status) {
         case "Running":
+        case "Available":
             return "bg-green-500/20 text-green-400";
         case "Pending":
+        case "Progressing":
             return "bg-yellow-500/20 text-yellow-400";
         case "CrashLoopBackOff":
+        case "ReplicaFailure":
             return "bg-red-500/20 text-red-400";
         default:
             return "bg-gray-500/20 text-gray-400";
       }
     }
 
-    return ( 
+    function getCondition(deployment) {
+        let available = false;
+        let progressing = false;
+        let conditions = deployment.status.conditions;
+
+        for (const condi of conditions) {
+            if (condi.type === "Available" && condi.status === "True") {
+                available = true;
+            }
+            if (condi.type === "Progressing" && condi.status === "True") {
+                progressing = true;
+            }
+        }
+        if (available === true) {
+            return "Available";
+        } else if (progressing === true) {
+            return "Progressing"
+        } else {
+            return "ReplicaFailure"
+        }
+    }
+
+    return (
     <div className="space-y-6 p-4 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Pods</h2>
+        <h2 className="text-2xl font-semibold">Deployments</h2>
         <div>
-          <p className="text-lg">{`${pods.length} Items`}</p>
+          <p className="text-lg">{`${deployments.length} Items`}</p>
         </div>
         {/* ---- Namespace Selector ---- */}
         <div className="relative min-w-6">
@@ -142,7 +149,7 @@ function PodsPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading pods...</p>
+        <p className="text-gray-400">Loading deployments...</p>
       ) : (
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-sm min-w-max">
@@ -151,31 +158,29 @@ function PodsPage() {
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Namespace</th>
                 <th className="px-4 py-3">Ready</th>
-                <th className="px-4 py-3">Restarts</th>
-                <th className="px-4 py-3">Controller</th>
+                <th className="px-4 py-3">Up-to-date</th>
+                <th className="px-4 py-3">Available</th>
                 <th className="px-4 py-3">Age</th>
-                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Condition</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {pods.map((pod) => (
-                <tr key={`${pod.metadata.name}`} className="hover:bg-gray-800/50">
-                  <td className="px-4 py-3 font-medium">{pod.metadata.name}</td>
-                  <td className="px-4 py-3 font-medium">{pod.metadata.namespace}</td>
-                  <td className="px-4 py-3 text-gray-400">{`${countReady(pod)}/${pod.status.containerStatuses.length}`}</td>
-                  <td className="px-4 py-3 text-gray-400">{countRestart(pod)}</td>
-                  <td className="px-4 py-3 text-gray-400">{
-                    pod.metadata.ownerReferences ? pod.metadata.ownerReferences[0].kind : 'None'
-                  }</td>
-                  <td className="px-4 py-3 text-gray-400">{countAge(pod)}</td>
+              {deployments.map((deployment) => (
+                <tr key={`${deployment.metadata.name}`} className="hover:bg-gray-800/50">
+                  <td className="px-4 py-3 font-medium">{deployment.metadata.name}</td>
+                  <td className="px-4 py-3 font-medium">{deployment.metadata.namespace}</td>
+                  <td className="px-4 py-3 text-gray-400">{`${deployment.status.readyReplicas}/${deployment.spec.replicas}`}</td>
+                  <td className="px-4 py-3 text-gray-400">{deployment.status.updatedReplicas}</td>
+                  <td className="px-4 py-3 text-gray-400">{deployment.status.availableReplicas}</td>
+                  <td className="px-4 py-3 text-gray-400">{countAge(deployment)}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`px-2 py-1 rounded-md text-xs font-medium ${statusColor(
-                        pod.status.phase
+                        getCondition(deployment)
                       )}`}
                     >
-                      {pod.status.phase}
+                      {getCondition(deployment)}
                     </span>
                   </td>
                 </tr>
@@ -187,5 +192,3 @@ function PodsPage() {
     </div>
     );
 }
-
-export default PodsPage;
