@@ -1,6 +1,5 @@
 import { NavLink } from "react-router";
 import {
-  LayoutDashboard,
   Boxes,
   Server,
   Network,
@@ -10,7 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-export function Sidebar() {
+export default function SideBar() {
   const [openWorkloads, setOpenWorkloads] = useState(true);
   
   const workloadItems = [

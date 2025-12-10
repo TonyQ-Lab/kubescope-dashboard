@@ -10,11 +10,12 @@ import (
 
 func main() {
 	manager := k8s.NewManager()
-	podHandler := handlers.PodHandler{K8s: manager}
+	workloadHandler := handlers.WorkloadHandler{K8s: manager}
+	namespaceHandler := handlers.NamespaceHandler{K8s: manager}
 	nodeHandler := handlers.NodeHandler{K8s: manager}
 	metricHandler := handlers.MetricsHandler{K8s: manager}
 
-	r := server.NewRouter(&podHandler, &nodeHandler, &metricHandler)
+	r := server.NewRouter(&workloadHandler, &nodeHandler, &namespaceHandler, &metricHandler)
 
 	var HOST = os.Getenv("HOST")
 	if HOST == "" {

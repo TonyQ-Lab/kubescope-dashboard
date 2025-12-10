@@ -1,38 +1,64 @@
 import { useEffect, useState } from "react";
-import { getPods } from "~/api";
-import { ChevronDown, Server } from "lucide-react";
-// import { fakePods } from "~/data/index"
+import { getNamespaces, getPods } from "../api/index";
+import { ChevronDown } from "lucide-react";
 
-function Pods() {
-    const [pods, setPods] = useState<any[]>([]);
+function PodsPage() {
+    const [pods, setPods] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [namespaces, setNamespaces] = useState<string[]>([
-      "default",
-      "kube-system"
+    const [namespaces, setNamespaces] = useState([
+      "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchPods();
+      async function fetchNamespaces() {
+        let nslist = [];
+        try {
+          setLoading(true);
+          const data = await getNamespaces();
+          data.forEach(ns => {
+            nslist.push(ns.metadata.name);
+          });
+          // console.log(nslist);
+          setNamespaces(nslist);
+        } catch (err) {
+          console.error("Failed to fetch namespaces:", err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      fetchNamespaces();
     }, [])
 
-    async function fetchPods() {
+    useEffect(() => {
+      async function fetchPods() {
         try {
             setLoading(true);
             // Replace this with your Go backend call
-            // const data = fakePods;
             const data = await getPods(currentNs);
-            console.log(data);
-            setPods(data);
+            // console.log(data);
+            if (data !== null) {
+              setPods(data);
+            } else {
+              setPods([]);
+            }
         } catch (err) {
             console.error("Failed to fetch pods:", err);
+            setError(err);
         } finally {
             setLoading(false);
         }
-    }
+      }
 
-    function countReady(pod: any): number {
-      let ready: number = 0;
+      fetchPods();
+    }, [currentNs])
+
+
+    function countReady(pod){
+      let ready = 0;
       for (const container of pod.status.containerStatuses) {
         if (container.ready === true) {
           ready ++;
@@ -41,15 +67,15 @@ function Pods() {
       return ready;
     }
 
-    function countRestart(pod: any): number {
-      let restart: number = 0;
+    function countRestart(pod){
+      let restart = 0;
       for (const container of pod.status.containerStatuses) {
         restart += container.restartCount;
       }
       return restart;
     }
 
-    function countAge(pod: any): string {
+    function countAge(pod) {
       const now = new Date();
       const pastTimestamp = new Date(pod.metadata.creationTimestamp);
 
@@ -79,17 +105,17 @@ function Pods() {
       }
     }
 
-    function statusColor(status: string) {
-        switch (status) {
-            case "Running":
-                return "bg-green-500/20 text-green-400";
-            case "Pending":
-                return "bg-yellow-500/20 text-yellow-400";
-            case "CrashLoopBackOff":
-                return "bg-red-500/20 text-red-400";
-            default:
-                return "bg-gray-500/20 text-gray-400";
-        }
+    function statusColor(status) {
+      switch (status) {
+        case "Running":
+            return "bg-green-500/20 text-green-400";
+        case "Pending":
+            return "bg-yellow-500/20 text-yellow-400";
+        case "CrashLoopBackOff":
+            return "bg-red-500/20 text-red-400";
+        default:
+            return "bg-gray-500/20 text-gray-400";
+      }
     }
 
     return ( 
@@ -121,6 +147,8 @@ function Pods() {
       {/* ---- Loading ---- */}
       {loading ? (
         <p className="text-gray-400">Loading pods...</p>
+      ) : error !== null ? (
+        <p className="text-gray-400">{`${error}`}</p>
       ) : (
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-sm min-w-max">
@@ -143,7 +171,9 @@ function Pods() {
                   <td className="px-4 py-3 font-medium">{pod.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{`${countReady(pod)}/${pod.status.containerStatuses.length}`}</td>
                   <td className="px-4 py-3 text-gray-400">{countRestart(pod)}</td>
-                  <td className="px-4 py-3 text-gray-400">{pod.metadata.ownerReferences[0].kind}</td>
+                  <td className="px-4 py-3 text-gray-400">{
+                    pod.metadata.ownerReferences ? pod.metadata.ownerReferences[0].kind : 'None'
+                  }</td>
                   <td className="px-4 py-3 text-gray-400">{countAge(pod)}</td>
                   <td className="px-4 py-3">
                     <span
@@ -164,4 +194,4 @@ function Pods() {
     );
 }
 
-export default Pods;
+export default PodsPage;

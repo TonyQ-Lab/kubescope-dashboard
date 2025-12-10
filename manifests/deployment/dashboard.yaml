@@ -16,7 +16,7 @@ spec:
       serviceAccountName: kubescope-account
       containers:
         - name: backend
-          image: tonyq2k3/kubescope-backend:0.0.1
+          image: tonyq2k3/kubescope-backend:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 8088
@@ -27,3 +27,34 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubescope-frontend
+  namespace: kubescope-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubescope-frontend
+  template:
+    metadata:
+      labels:
+        app: kubescope-frontend
+    spec:
+      containers:
+        - name: backend
+          image: tonyq2k3/kubescope-frontend:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 3000
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "500Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
