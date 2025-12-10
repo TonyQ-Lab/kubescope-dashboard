@@ -11,6 +11,7 @@ import { useState } from "react";
 
 export default function SideBar() {
   const [openWorkloads, setOpenWorkloads] = useState(true);
+  const [openNetworks, setOpenNetworks] = useState(false);
   
   const workloadItems = [
     { label: "Pods", path: "/workload/pods" },
@@ -20,10 +21,14 @@ export default function SideBar() {
     { label: "DaemonSets", path: "/workload/daemonsets" },
   ];
 
+  const networkItems = [
+    { label: "Services", path: "/network/services" },
+  ]
+
   const otherItems = [
     // { label: "Overview", icon: <LayoutDashboard size={20} />, path: "/" },
     { label: "Nodes", icon: <Server size={20} />, path: "/nodes" },
-    { label: "Networking", icon: <Network size={20} />, path: "/networking" },
+    { label: "Events", icon: <Server size={20} />, path: "/events" },
     { label: "Storage", icon: <Database size={20} />, path: "/storage" },
     { label: "Settings", icon: <Settings size={20} />, path: "/settings" },
   ];
@@ -52,14 +57,53 @@ export default function SideBar() {
 
         {/* --- Children list --- */}
         {openWorkloads && (
-          <div className="ml-12 flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1">
             {workloadItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                  className={({ isActive }) =>
                   `
-                    px-3 py-2 text-sm rounded-md transition
+                    pl-14 px-3 py-2 text-sm rounded-md transition
+                    ${
+                      isActive
+                        ? "bg-gray-800 text-white"
+                        : "text-gray-400 hover:bg-gray-800/40"
+                    }
+                  `
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+        )}
+
+        {/* --- Collapsible Network Section --- */}
+        <button
+          onClick={() => setOpenNetworks(isOpen => !isOpen)}
+          className="flex items-center w-full px-6 py-3 gap-3 text-gray-400 hover:bg-gray-800/50 transition-colors"
+        >
+          <Network size={20} />
+          <span className="font-medium flex-1 text-left">Networking</span>
+          <ChevronDown
+            size={18}
+            className={`transition-transform ${
+              openNetworks ? "rotate-180" : "rotate-0"
+            }`}
+          />
+        </button>
+
+        {/* --- Networking list --- */}
+        {openNetworks && (
+          <div className="flex flex-col space-y-1">
+            {networkItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                 className={({ isActive }) =>
+                  `
+                    pl-14 px-3 py-2 text-sm rounded-md transition
                     ${
                       isActive
                         ? "bg-gray-800 text-white"
