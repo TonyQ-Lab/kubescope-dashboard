@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getPods } from "../api/index";
 import { ChevronDown } from "lucide-react";
+import { countAge } from "../utils";
 
 function PodsPage() {
     const [pods, setPods] = useState([]);
@@ -73,36 +74,6 @@ function PodsPage() {
         restart += container.restartCount;
       }
       return restart;
-    }
-
-    function countAge(pod) {
-      const now = new Date();
-      const pastTimestamp = new Date(pod.metadata.creationTimestamp);
-
-      const timeDifference = now.getTime() - pastTimestamp.getTime();
-      const seconds = Math.floor(timeDifference / 1000);
-      const minutes = Math.floor(seconds / 60);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
-      const weeks = Math.floor(days / 7);
-      const months = Math.floor(days / 30);
-      const years = Math.floor(days / 365);
-
-      if (years > 0) {
-          return `${years}y`;
-      } else if (months > 0) {
-          return `${months}m`;
-      } else if (weeks > 0) {
-          return `${weeks}w`;
-      } else if (days > 0) {
-          return `${days}d`;
-      } else if (hours > 0) {
-          return `${hours}h`;
-      } else if (minutes > 0) {
-          return `${minutes}m`;
-      } else {
-          return `${seconds}s`;
-      }
     }
 
     function statusColor(status) {
