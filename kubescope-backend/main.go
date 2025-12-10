@@ -14,8 +14,10 @@ func main() {
 	namespaceHandler := handlers.NamespaceHandler{K8s: manager}
 	nodeHandler := handlers.NodeHandler{K8s: manager}
 	metricHandler := handlers.MetricsHandler{K8s: manager}
+	networkHandler := handlers.NetworkHandler{K8s: manager}
+	eventHandler := handlers.EventsHandler{K8s: manager}
 
-	r := server.NewRouter(&workloadHandler, &nodeHandler, &namespaceHandler, &metricHandler)
+	r := server.NewRouter(&workloadHandler, &nodeHandler, &namespaceHandler, &metricHandler, &networkHandler, &eventHandler)
 
 	var HOST = os.Getenv("HOST")
 	if HOST == "" {

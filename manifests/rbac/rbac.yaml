@@ -20,6 +20,7 @@ rules:
   - nodes
   - configmaps
   - secrets
+  - events
   verbs: ["get", "watch", "list", "create", "delete", "update", "patch"]
 - apiGroups:
   - apps

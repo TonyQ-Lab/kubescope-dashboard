@@ -11,6 +11,8 @@ func NewRouter(
 	nodeHandler *handlers.NodeHandler,
 	namespaceHandler *handlers.NamespaceHandler,
 	metricHandler *handlers.MetricsHandler,
+	networkHandler *handlers.NetworkHandler,
+	eventHandler *handlers.EventsHandler,
 ) *gin.Engine {
 	r := gin.Default()
 
@@ -23,6 +25,13 @@ func NewRouter(
 		api.GET("/daemonsets", workloadHandler.HandleGetDaemonSets)
 		api.GET("/replicasets", workloadHandler.HandleGetReplicaSets)
 		api.GET("/statefulsets", workloadHandler.HandleGetStatefulSets)
+
+		api.GET("/nodemetrics", metricHandler.HandleNodeMetrics)
+		api.GET("/podmetrics", metricHandler.HandlePodMetrics)
+
+		api.GET("/services", networkHandler.HandleGetServices)
+
+		api.GET("/events", eventHandler.HandleGetEvents)
 	}
 
 	return r

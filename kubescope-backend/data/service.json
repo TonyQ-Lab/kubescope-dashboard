@@ -1,0 +1,142 @@
+[
+    {
+        "metadata": {
+            "name": "kubescope-backend",
+            "namespace": "kubescope-dashboard",
+            "uid": "b78f01a5-318c-4578-8315-cc994d525ee9",
+            "resourceVersion": "13130",
+            "creationTimestamp": "2025-11-25T13:56:18Z",
+            "annotations": {
+                "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"kubescope-backend\",\"namespace\":\"kubescope-dashboard\"},\"spec\":{\"ports\":[{\"port\":80,\"protocol\":\"TCP\",\"targetPort\":8088}],\"selector\":{\"app\":\"kubescope-backend\"}}}\n"
+            },
+            "managedFields": [
+                {
+                    "manager": "kubectl-client-side-apply",
+                    "operation": "Update",
+                    "apiVersion": "v1",
+                    "time": "2025-11-25T13:56:18Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:metadata": {
+                            "f:annotations": {
+                                ".": {},
+                                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                            }
+                        },
+                        "f:spec": {
+                            "f:internalTrafficPolicy": {},
+                            "f:ports": {
+                                ".": {},
+                                "k:{\"port\":80,\"protocol\":\"TCP\"}": {
+                                    ".": {},
+                                    "f:port": {},
+                                    "f:protocol": {},
+                                    "f:targetPort": {}
+                                }
+                            },
+                            "f:selector": {},
+                            "f:sessionAffinity": {},
+                            "f:type": {}
+                        }
+                    }
+                }
+            ]
+        },
+        "spec": {
+            "ports": [
+                {
+                    "protocol": "TCP",
+                    "port": 80,
+                    "targetPort": 8088
+                }
+            ],
+            "selector": {
+                "app": "kubescope-backend"
+            },
+            "clusterIP": "10.99.85.18",
+            "clusterIPs": [
+                "10.99.85.18"
+            ],
+            "type": "ClusterIP",
+            "sessionAffinity": "None",
+            "ipFamilies": [
+                "IPv4"
+            ],
+            "ipFamilyPolicy": "SingleStack",
+            "internalTrafficPolicy": "Cluster"
+        },
+        "status": {
+            "loadBalancer": {}
+        }
+    },
+    {
+        "metadata": {
+            "name": "kubescope-frontend",
+            "namespace": "kubescope-dashboard",
+            "uid": "cb6c97f9-1ffb-49ce-a26d-474468568277",
+            "resourceVersion": "27555",
+            "creationTimestamp": "2025-12-05T13:14:33Z",
+            "annotations": {
+                "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"kubescope-frontend\",\"namespace\":\"kubescope-dashboard\"},\"spec\":{\"ports\":[{\"port\":80,\"protocol\":\"TCP\",\"targetPort\":3000}],\"selector\":{\"app\":\"kubescope-frontend\"}}}\n"
+            },
+            "managedFields": [
+                {
+                    "manager": "kubectl-client-side-apply",
+                    "operation": "Update",
+                    "apiVersion": "v1",
+                    "time": "2025-12-05T13:14:33Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:metadata": {
+                            "f:annotations": {
+                                ".": {},
+                                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                            }
+                        },
+                        "f:spec": {
+                            "f:internalTrafficPolicy": {},
+                            "f:ports": {
+                                ".": {},
+                                "k:{\"port\":80,\"protocol\":\"TCP\"}": {
+                                    ".": {},
+                                    "f:port": {},
+                                    "f:protocol": {},
+                                    "f:targetPort": {}
+                                }
+                            },
+                            "f:selector": {},
+                            "f:sessionAffinity": {},
+                            "f:type": {}
+                        }
+                    }
+                }
+            ]
+        },
+        "spec": {
+            "ports": [
+                {
+                    "protocol": "TCP",
+                    "port": 80,
+                    "targetPort": 3000
+                }
+            ],
+            "selector": {
+                "app": "kubescope-frontend"
+            },
+            "clusterIP": "10.99.178.230",
+            "clusterIPs": [
+                "10.99.178.230"
+            ],
+            "type": "ClusterIP",
+            "sessionAffinity": "None",
+            "ipFamilies": [
+                "IPv4"
+            ],
+            "ipFamilyPolicy": "SingleStack",
+            "internalTrafficPolicy": "Cluster"
+        },
+        "status": {
+            "loadBalancer": {}
+        }
+    }
+]
