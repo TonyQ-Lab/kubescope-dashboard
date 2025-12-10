@@ -10,36 +10,12 @@ export default function ReplicasPage() {
       "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-      fetchNamespaces();
-    }, [])
-
-    useEffect(() => {
-      fetchReplicaSets();
-    }, [currentNs])
-
-    async function fetchReplicaSets() {
-      try {
-          setLoading(true);
-          // Replace this with your Go backend call
-          const data = await getReplicaSets(currentNs);
-          // console.log(data);
-          if (data !== null) {
-            setReplicaSets(data);
-          } else {
-            setReplicaSets([]);
-          }
-      } catch (err) {
-          console.error("Failed to fetch ReplicaSets:", err);
-      } finally {
-          setLoading(false);
-      }
-    }
-
-    async function fetchNamespaces() {
-      let nslist = [];
-      try {
+      async function fetchNamespaces() {
+        let nslist = [];
+        try {
           setLoading(true);
           const data = await getNamespaces();
           data.forEach(ns => {
@@ -47,28 +23,37 @@ export default function ReplicasPage() {
           });
           // console.log(nslist);
           setNamespaces(nslist);
-      } catch (err) {
+        } catch (err) {
           console.error("Failed to fetch namespaces:", err);
-      } finally {
+          setError(err);
+        } finally {
           setLoading(false);
+        }
       }
-    }
+      fetchNamespaces();
+    }, [])
 
-    function statusColor(status) {
-      switch (status) {
-        case "Running":
-        case "Available":
-            return "bg-green-500/20 text-green-400";
-        case "Pending":
-        case "Progressing":
-            return "bg-yellow-500/20 text-yellow-400";
-        case "CrashLoopBackOff":
-        case "ReplicaFailure":
-            return "bg-red-500/20 text-red-400";
-        default:
-            return "bg-gray-500/20 text-gray-400";
+    useEffect(() => {
+    async function fetchReplicaSets() {
+      try {
+        setLoading(true);
+        // Replace this with your Go backend call
+        const data = await getReplicaSets(currentNs);
+        // console.log(data);
+        if (data !== null) {
+          setReplicaSets(data);
+        } else {
+          setReplicaSets([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch ReplicaSets:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     }
+      fetchReplicaSets();
+    }, [currentNs])
 
     return (
     <div className="space-y-6 p-4 h-full w-full">
@@ -99,6 +84,8 @@ export default function ReplicasPage() {
       {/* ---- Loading ---- */}
       {loading ? (
         <p className="text-gray-400">Loading ReplicaSets...</p>
+      ) : error !== null ? (
+        <p className="text-gray-400">{`${error}`}</p>
       ) : (
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-sm min-w-max">

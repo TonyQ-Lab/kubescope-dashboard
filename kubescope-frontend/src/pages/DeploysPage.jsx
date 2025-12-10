@@ -9,36 +9,12 @@ export default function DeploysPage() {
       "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-      fetchNamespaces();
-    }, [])
-
-    useEffect(() => {
-      fetchDeployments();
-    }, [currentNs])
-
-    async function fetchDeployments() {
-      try {
-          setLoading(true);
-          // Replace this with your Go backend call
-          const data = await getDeployments(currentNs);
-          // console.log(data);
-          if (data !== null) {
-            setDeployments(data);
-          } else {
-            setDeployments([]);
-          }
-      } catch (err) {
-          console.error("Failed to fetch pods:", err);
-      } finally {
-          setLoading(false);
-      }
-    }
-
-    async function fetchNamespaces() {
-      let nslist = [];
-      try {
+      async function fetchNamespaces() {
+        let nslist = [];
+        try {
           setLoading(true);
           const data = await getNamespaces();
           data.forEach(ns => {
@@ -46,12 +22,39 @@ export default function DeploysPage() {
           });
           // console.log(nslist);
           setNamespaces(nslist);
-      } catch (err) {
+        } catch (err) {
           console.error("Failed to fetch namespaces:", err);
-      } finally {
+          setError(err);
+        } finally {
           setLoading(false);
+        }
       }
-    }
+
+      fetchNamespaces();
+    }, [])
+
+    useEffect(() => {
+      async function fetchDeployments() {
+        try {
+            setLoading(true);
+            // Replace this with your Go backend call
+            const data = await getDeployments(currentNs);
+            // console.log(data);
+            if (data !== null) {
+              setDeployments(data);
+            } else {
+              setDeployments([]);
+            }
+        } catch (err) {
+            console.error("Failed to fetch pods:", err);
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+      }
+      fetchDeployments();
+    }, [currentNs])
+
 
     function countAge(deployment) {
       const now = new Date();
@@ -150,6 +153,8 @@ export default function DeploysPage() {
       {/* ---- Loading ---- */}
       {loading ? (
         <p className="text-gray-400">Loading deployments...</p>
+      ) : error !== null ? (
+        <p className="text-gray-400">{`${error}`}</p>
       ) : (
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-sm min-w-max">

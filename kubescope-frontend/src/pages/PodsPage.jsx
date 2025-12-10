@@ -9,36 +9,12 @@ function PodsPage() {
       "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-      fetchNamespaces();
-    }, [])
-
-    useEffect(() => {
-      fetchPods();
-    }, [currentNs])
-
-    async function fetchPods() {
-      try {
-          setLoading(true);
-          // Replace this with your Go backend call
-          const data = await getPods(currentNs);
-          // console.log(data);
-          if (data !== null) {
-            setPods(data);
-          } else {
-            setPods([]);
-          }
-      } catch (err) {
-          console.error("Failed to fetch pods:", err);
-      } finally {
-          setLoading(false);
-      }
-    }
-
-    async function fetchNamespaces() {
-      let nslist = [];
-      try {
+      async function fetchNamespaces() {
+        let nslist = [];
+        try {
           setLoading(true);
           const data = await getNamespaces();
           data.forEach(ns => {
@@ -46,12 +22,40 @@ function PodsPage() {
           });
           // console.log(nslist);
           setNamespaces(nslist);
-      } catch (err) {
+        } catch (err) {
           console.error("Failed to fetch namespaces:", err);
-      } finally {
+          setError(err);
+        } finally {
           setLoading(false);
+        }
       }
-    }
+
+      fetchNamespaces();
+    }, [])
+
+    useEffect(() => {
+      async function fetchPods() {
+        try {
+            setLoading(true);
+            // Replace this with your Go backend call
+            const data = await getPods(currentNs);
+            // console.log(data);
+            if (data !== null) {
+              setPods(data);
+            } else {
+              setPods([]);
+            }
+        } catch (err) {
+            console.error("Failed to fetch pods:", err);
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+      }
+
+      fetchPods();
+    }, [currentNs])
+
 
     function countReady(pod){
       let ready = 0;
@@ -143,6 +147,8 @@ function PodsPage() {
       {/* ---- Loading ---- */}
       {loading ? (
         <p className="text-gray-400">Loading pods...</p>
+      ) : error !== null ? (
+        <p className="text-gray-400">{`${error}`}</p>
       ) : (
         <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-sm min-w-max">
