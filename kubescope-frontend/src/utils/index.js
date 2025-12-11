@@ -33,3 +33,26 @@ export function truncateText(text, maxLength) {
         return text;
     return `${text.slice(0, maxLength)}...`;
 }
+
+export function getPortString(ports) {
+    let result = [];
+    for (const port of ports) {
+        if (port.nodePort)
+            result.push(`${port.port}:${port.nodePort}/${port.protocol}`);
+        else result.push(`${port.port}/${port.protocol}`);
+    }
+    return result.join(", ");
+}
+
+export function getExternalIP(service) {
+    if (service.spec.type !== "LoadBalancer")
+        return "<none>";
+    if (service.status.loadBalancer.ingress) {
+        if (service.status.loadBalancer.ingress.ip)
+            return `${service.status.loadBalancer.ingress.ip}`;
+        else if (service.status.loadBalancer.ingress.hostname)
+            return `${service.status.loadBalancer.ingress.hostname}`;
+        else return "<pending>";
+    }
+    return "<pending>";
+}

@@ -12,6 +12,7 @@ import ReplicasPage from "./pages/ReplicasPage";
 import StatefulPage from "./pages/StatefulPage";
 import DaemonsPage from "./pages/DaemonsPage";
 import EventsPage from "./pages/EventsPage";
+import ServicesPage from "./pages/ServicesPage";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/workload/statefulsets" element={<StatefulPage />} />
           <Route path="/workload/daemonsets" element={<DaemonsPage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/network/services" element={<ServicesPage />} />
         </Routes>
       </Layout>
     </Router>
