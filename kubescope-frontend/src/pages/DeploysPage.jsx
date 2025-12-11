@@ -122,7 +122,7 @@ export default function DeploysPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading deployments...</p>
+        <p className="text-gray-400">Loading Deployments...</p>
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (

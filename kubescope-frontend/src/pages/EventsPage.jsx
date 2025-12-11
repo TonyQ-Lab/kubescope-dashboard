@@ -80,7 +80,7 @@ function EventsPage() {
     <div className="space-y-6 p-4 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Pods</h2>
+        <h2 className="text-2xl font-semibold">Events</h2>
         <div>
           <p className="text-lg">{`${events.length} Items`}</p>
         </div>

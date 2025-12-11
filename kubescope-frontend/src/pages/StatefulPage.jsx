@@ -86,7 +86,7 @@ export default function StatefulPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading deployments...</p>
+        <p className="text-gray-400">Loading StatefulSets...</p>
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (

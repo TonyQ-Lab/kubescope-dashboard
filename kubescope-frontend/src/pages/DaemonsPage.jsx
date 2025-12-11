@@ -85,7 +85,7 @@ export default function DaemonsPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading daemonsets...</p>
+        <p className="text-gray-400">Loading DaemonSets...</p>
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
