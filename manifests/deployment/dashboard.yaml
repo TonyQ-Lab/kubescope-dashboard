@@ -19,7 +19,7 @@ spec:
           image: tonyq2k3/kubescope-backend:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
-          - containerPort: 8088
+          - containerPort: 80
           resources:
             requests:
               cpu: "250m"
@@ -50,7 +50,7 @@ spec:
           image: tonyq2k3/kubescope-frontend:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
-          - containerPort: 3000
+          - containerPort: 80
           resources:
             requests:
               cpu: "300m"

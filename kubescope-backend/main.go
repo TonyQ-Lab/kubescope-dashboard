@@ -21,11 +21,11 @@ func main() {
 
 	var HOST = os.Getenv("HOST")
 	if HOST == "" {
-		HOST = "localhost"
+		HOST = "0.0.0.0"
 	}
 	var PORT = os.Getenv("PORT")
 	if PORT == "" {
-		PORT = "8088"
+		PORT = "80"
 	}
 	server := fmt.Sprintf("%s:%s", HOST, PORT)
 	r.Run(server)
