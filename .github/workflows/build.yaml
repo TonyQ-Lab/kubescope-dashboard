@@ -1,0 +1,40 @@
+name: Build
+
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: Image version to build
+
+env:
+  REGISTRY: docker.io
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  FRONTEND_IMAGE_NAME: tonyq2k3/kubescope-frontend:${{ inputs.version }}
+  BACKEND_IMAGE_NAME: tonyq2k3/kubescope-backend:${{ inputs.version }}
+
+    
+jobs:
+  build:
+    name: Build and Push Docker images
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Login to Docker
+        run: echo "$DOCKER_PASSWORD" | docker login $REGISTRY -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: Build Front-end image
+        working-directory: kubescope-frontend
+        run: |
+          docker build -t $FRONTEND_IMAGE_NAME .
+          docker push $FRONTEND_IMAGE_NAME
+
+      - name: Build Back-end image
+        working-directory: kubescope-backend
+        run: |
+          docker build -t $BACKEND_IMAGE_NAME .
+          docker push $BACKEND_IMAGE_NAME
