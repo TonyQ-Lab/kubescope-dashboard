@@ -1,0 +1,80 @@
+[
+    {
+        "metadata": {
+            "name": "pv-demo",
+            "uid": "3c2bd10f-2c32-436b-b8d3-09f8e1ce2313",
+            "resourceVersion": "15309",
+            "creationTimestamp": "2025-12-19T09:34:28Z",
+            "annotations": {
+                "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolume\",\"metadata\":{\"annotations\":{},\"name\":\"pv-demo\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"capacity\":{\"storage\":\"1Gi\"},\"hostPath\":{\"path\":\"/mnt/data/pv-demo\"},\"persistentVolumeReclaimPolicy\":\"Retain\",\"storageClassName\":\"manual\"}}\n"
+            },
+            "finalizers": [
+                "kubernetes.io/pv-protection"
+            ],
+            "managedFields": [
+                {
+                    "manager": "kube-controller-manager",
+                    "operation": "Update",
+                    "apiVersion": "v1",
+                    "time": "2025-12-19T09:34:28Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:status": {
+                            "f:phase": {}
+                        }
+                    },
+                    "subresource": "status"
+                },
+                {
+                    "manager": "kubectl-client-side-apply",
+                    "operation": "Update",
+                    "apiVersion": "v1",
+                    "time": "2025-12-19T09:34:28Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:metadata": {
+                            "f:annotations": {
+                                ".": {},
+                                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                            }
+                        },
+                        "f:spec": {
+                            "f:accessModes": {},
+                            "f:capacity": {
+                                ".": {},
+                                "f:storage": {}
+                            },
+                            "f:hostPath": {
+                                ".": {},
+                                "f:path": {},
+                                "f:type": {}
+                            },
+                            "f:persistentVolumeReclaimPolicy": {},
+                            "f:storageClassName": {},
+                            "f:volumeMode": {}
+                        }
+                    }
+                }
+            ]
+        },
+        "spec": {
+            "capacity": {
+                "storage": "1Gi"
+            },
+            "hostPath": {
+                "path": "/mnt/data/pv-demo",
+                "type": ""
+            },
+            "accessModes": [
+                "ReadWriteOnce"
+            ],
+            "persistentVolumeReclaimPolicy": "Retain",
+            "storageClassName": "manual",
+            "volumeMode": "Filesystem"
+        },
+        "status": {
+            "phase": "Available",
+            "lastPhaseTransitionTime": "2025-12-19T09:34:28Z"
+        }
+    }
+]

@@ -1,0 +1,60 @@
+[
+    {
+        "metadata": {
+            "name": "pvc-demo",
+            "namespace": "default",
+            "uid": "32f2aaf1-d306-42fd-9003-643ee912a797",
+            "resourceVersion": "15310",
+            "creationTimestamp": "2025-12-19T09:34:28Z",
+            "annotations": {
+                "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"pvc-demo\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"5Gi\"}},\"storageClassName\":\"manual\"}}\n"
+            },
+            "finalizers": [
+                "kubernetes.io/pvc-protection"
+            ],
+            "managedFields": [
+                {
+                    "manager": "kubectl-client-side-apply",
+                    "operation": "Update",
+                    "apiVersion": "v1",
+                    "time": "2025-12-19T09:34:28Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:metadata": {
+                            "f:annotations": {
+                                ".": {},
+                                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                            }
+                        },
+                        "f:spec": {
+                            "f:accessModes": {},
+                            "f:resources": {
+                                "f:requests": {
+                                    ".": {},
+                                    "f:storage": {}
+                                }
+                            },
+                            "f:storageClassName": {},
+                            "f:volumeMode": {}
+                        }
+                    }
+                }
+            ]
+        },
+        "spec": {
+            "accessModes": [
+                "ReadWriteOnce"
+            ],
+            "resources": {
+                "requests": {
+                    "storage": "5Gi"
+                }
+            },
+            "storageClassName": "manual",
+            "volumeMode": "Filesystem"
+        },
+        "status": {
+            "phase": "Pending"
+        }
+    }
+]
