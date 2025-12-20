@@ -47,3 +47,15 @@ export function getServices(ns = 'default') {
 export function getEvents(ns = 'default') {
     return getJSON(`/api/events?namespace=${encodeURIComponent(ns)}`)
 }
+
+export function getPVs() {
+    return getJSON(`/api/persistentvolumes`)
+}
+
+export function getPVCs(ns = 'default') {
+    return getJSON(`/api/persistentvolumeclaims?namespace=${encodeURIComponent(ns)}`)
+}
+
+export function getStorageClasses() {
+    return getJSON(`/api/storageclasses`)
+}
