@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getEvents } from "../api";
-import { countAge, truncateText } from "../utils";
+import { countAge } from "../utils";
 import { ChevronDown } from "lucide-react";
 
 function EventsPage() {
@@ -11,7 +11,6 @@ function EventsPage() {
     ])
     const [currentNs, setCurrentNS] = useState("default");
     const [error, setError] = useState(null);
-    const [expandedRow, setExpandedRow] = useState(null);
 
     useEffect(() => {
       async function fetchNamespaces() {
@@ -135,7 +134,7 @@ function EventsPage() {
                   </td>
                   <td className="px-4 py-3 text-gray-400">{event.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400 max-w-md">
-                    <div className={expandedRow === event.metadata.name ? '' : 'line-clamp-2'}>
+                    <div className='line-clamp-2'>
                       {event.message}
                     </div>
                   </td>
