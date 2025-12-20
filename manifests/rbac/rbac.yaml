@@ -20,7 +20,11 @@ rules:
   - nodes
   - configmaps
   - secrets
+  - events
+  - persistentvolumes
+  - persistentvolumeclaims
   verbs: ["get", "watch", "list", "create", "delete", "update", "patch"]
+
 - apiGroups:
   - apps
   resources:
@@ -28,6 +32,12 @@ rules:
   - statefulsets
   - daemonsets
   - replicasets
+  verbs: ["get", "watch", "list", "create", "delete", "update", "patch"]
+
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
   verbs: ["get", "watch", "list", "create", "delete", "update", "patch"]
 
 ---

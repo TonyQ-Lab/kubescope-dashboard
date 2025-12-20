@@ -1,0 +1,158 @@
+[
+    {
+        "metadata": {
+            "name": "kubescope-backend-59c84cbcd6-g7bkm.187fe4006dfbca60",
+            "namespace": "kubescope-dashboard",
+            "uid": "f5b99db7-37d6-4388-a948-e831e454d4f5",
+            "resourceVersion": "44845",
+            "creationTimestamp": "2025-12-10T15:24:29Z",
+            "managedFields": [
+                {
+                    "manager": "kube-scheduler",
+                    "operation": "Update",
+                    "apiVersion": "events.k8s.io/v1",
+                    "time": "2025-12-10T15:24:29Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:action": {},
+                        "f:eventTime": {},
+                        "f:note": {},
+                        "f:reason": {},
+                        "f:regarding": {},
+                        "f:reportingController": {},
+                        "f:reportingInstance": {},
+                        "f:type": {}
+                    }
+                }
+            ]
+        },
+        "involvedObject": {
+            "kind": "Pod",
+            "namespace": "kubescope-dashboard",
+            "name": "kubescope-backend-59c84cbcd6-g7bkm",
+            "uid": "e9c0fb07-2f47-4bcc-9080-0c45d9ea9d20",
+            "apiVersion": "v1",
+            "resourceVersion": "44839"
+        },
+        "reason": "Scheduled",
+        "message": "Successfully assigned kubescope-dashboard/kubescope-backend-59c84cbcd6-g7bkm to minikube",
+        "source": {},
+        "firstTimestamp": null,
+        "lastTimestamp": null,
+        "type": "Normal",
+        "eventTime": "2025-12-10T15:24:29.448866Z",
+        "action": "Binding",
+        "reportingComponent": "default-scheduler",
+        "reportingInstance": "default-scheduler-minikube"
+    },
+    {
+        "metadata": {
+            "name": "kubescope-backend-59c84cbcd6-g7bkm.187fe4008b996664",
+            "namespace": "kubescope-dashboard",
+            "uid": "02f01953-c5c8-4b1e-9d92-1a91d1b39b5c",
+            "resourceVersion": "45406",
+            "creationTimestamp": "2025-12-10T15:24:29Z",
+            "managedFields": [
+                {
+                    "manager": "kubelet",
+                    "operation": "Update",
+                    "apiVersion": "v1",
+                    "time": "2025-12-10T15:34:47Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:count": {},
+                        "f:firstTimestamp": {},
+                        "f:involvedObject": {},
+                        "f:lastTimestamp": {},
+                        "f:message": {},
+                        "f:reason": {},
+                        "f:reportingComponent": {},
+                        "f:reportingInstance": {},
+                        "f:source": {
+                            "f:component": {},
+                            "f:host": {}
+                        },
+                        "f:type": {}
+                    }
+                }
+            ]
+        },
+        "involvedObject": {
+            "kind": "Pod",
+            "namespace": "kubescope-dashboard",
+            "name": "kubescope-backend-59c84cbcd6-g7bkm",
+            "uid": "e9c0fb07-2f47-4bcc-9080-0c45d9ea9d20",
+            "apiVersion": "v1",
+            "resourceVersion": "44843",
+            "fieldPath": "spec.containers{backend}"
+        },
+        "reason": "Pulled",
+        "message": "Container image \"tonyq2k3/kubescope-backend:1.0.0\" already present on machine",
+        "source": {
+            "component": "kubelet",
+            "host": "minikube"
+        },
+        "firstTimestamp": "2025-12-10T15:24:29Z",
+        "lastTimestamp": "2025-12-10T15:34:47Z",
+        "count": 5,
+        "type": "Normal",
+        "eventTime": null,
+        "reportingComponent": "kubelet",
+        "reportingInstance": "minikube"
+    },
+    {
+        "metadata": {
+            "name": "kubescope-backend-59c84cbcd6-g7bkm.187fe4008e1515fd",
+            "namespace": "kubescope-dashboard",
+            "uid": "abf43cde-1369-44de-a844-f462b3cab53a",
+            "resourceVersion": "45407",
+            "creationTimestamp": "2025-12-10T15:24:29Z",
+            "managedFields": [
+                {
+                    "manager": "kubelet",
+                    "operation": "Update",
+                    "apiVersion": "v1",
+                    "time": "2025-12-10T15:34:47Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:count": {},
+                        "f:firstTimestamp": {},
+                        "f:involvedObject": {},
+                        "f:lastTimestamp": {},
+                        "f:message": {},
+                        "f:reason": {},
+                        "f:reportingComponent": {},
+                        "f:reportingInstance": {},
+                        "f:source": {
+                            "f:component": {},
+                            "f:host": {}
+                        },
+                        "f:type": {}
+                    }
+                }
+            ]
+        },
+        "involvedObject": {
+            "kind": "Pod",
+            "namespace": "kubescope-dashboard",
+            "name": "kubescope-backend-59c84cbcd6-g7bkm",
+            "uid": "e9c0fb07-2f47-4bcc-9080-0c45d9ea9d20",
+            "apiVersion": "v1",
+            "resourceVersion": "44843",
+            "fieldPath": "spec.containers{backend}"
+        },
+        "reason": "Created",
+        "message": "Created container: backend",
+        "source": {
+            "component": "kubelet",
+            "host": "minikube"
+        },
+        "firstTimestamp": "2025-12-10T15:24:29Z",
+        "lastTimestamp": "2025-12-10T15:34:47Z",
+        "count": 5,
+        "type": "Normal",
+        "eventTime": null,
+        "reportingComponent": "kubelet",
+        "reportingInstance": "minikube"
+    }
+]

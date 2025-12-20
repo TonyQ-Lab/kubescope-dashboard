@@ -17,7 +17,7 @@ COPY . .
 
 # Only un-comment these if you want to modify the port (and host)
 # ENV HOST localhost
-# ENV PORT 8088
+# ENV PORT 80
 
 # Build binary (static)
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
@@ -39,6 +39,6 @@ COPY --from=builder /app/server .
 USER tonyq
 
 # Expose port
-EXPOSE 8088
+EXPOSE 80
 
 CMD ["./server"]

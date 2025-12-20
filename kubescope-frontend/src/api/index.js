@@ -28,17 +28,34 @@ export function getNamespaces() {
     return getJSON('/api/namespaces')
 }
 
-
 export function getNodes(){
     return getJSON('/api/nodes')
 }
-
 
 export function getNodeMetrics(){
     return getJSON('/api/metrics/nodes')
 }
 
-
 export function getPodMetrics(ns = 'default'){
     return getJSON(`/api/metrics/pods?namespace=${encodeURIComponent(ns)}`)
+}
+
+export function getServices(ns = 'default') {
+    return getJSON(`/api/services?namespace=${encodeURIComponent(ns)}`)
+}
+
+export function getEvents(ns = 'default') {
+    return getJSON(`/api/events?namespace=${encodeURIComponent(ns)}`)
+}
+
+export function getPVs() {
+    return getJSON(`/api/persistentvolumes`)
+}
+
+export function getPVCs(ns = 'default') {
+    return getJSON(`/api/persistentvolumeclaims?namespace=${encodeURIComponent(ns)}`)
+}
+
+export function getStorageClasses() {
+    return getJSON(`/api/storageclasses`)
 }

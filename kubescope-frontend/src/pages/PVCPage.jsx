@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { getNamespaces, getPods } from "../api/index";
+import { getPVCs, getNamespaces } from "../api/index";
 import { ChevronDown } from "lucide-react";
 import { countAge } from "../utils";
 
-function PodsPage() {
-    const [pods, setPods] = useState([]);
+export default function PVCPage() {
+    const [pvcs, setPVCs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [namespaces, setNamespaces] = useState([
       "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
-    const [error, setError] = useState(null);
 
     useEffect(() => {
       async function fetchNamespaces() {
@@ -35,57 +35,40 @@ function PodsPage() {
     }, [])
 
     useEffect(() => {
-      async function fetchPods() {
+      async function fetchPVCs() {
         try {
             setLoading(true);
             // Replace this with your Go backend call
-            const data = await getPods(currentNs);
+            const data = await getPVCs(currentNs);
             // console.log(data);
             if (data !== null) {
-              setPods(data);
+              setPVCs(data);
             } else {
-              setPods([]);
+              setPVCs([]);
             }
         } catch (err) {
-            console.error("Failed to fetch pods:", err);
+            console.error("Failed to fetch PersistentVolumeClaims:", err);
             setError(err);
         } finally {
             setLoading(false);
         }
       }
+      fetchPVCs();
+    }, [currentNs]);
 
-      fetchPods();
-    }, [currentNs])
-
-
-    function countReady(pod){
-      let ready = 0;
-      for (const container of pod.status.containerStatuses) {
-        if (container.ready === true) {
-          ready ++;
-        }
-      }
-      return ready;
-    }
-
-    function countRestart(pod){
-      let restart = 0;
-      for (const container of pod.status.containerStatuses) {
-        restart += container.restartCount;
-      }
-      return restart;
-    }
 
     function statusColor(status) {
       switch (status) {
-        case "Running":
-            return "bg-green-500/20 text-green-400";
+        case "Available":
+          return "bg-green-500/20 text-green-400";
+        case "Bound":
+          return "bg-purple-500/20 text-purple-400"
         case "Pending":
-            return "bg-yellow-500/20 text-yellow-400";
-        case "CrashLoopBackOff":
-            return "bg-red-500/20 text-red-400";
+          return "bg-yellow-500/20 text-yellow-400";
+        case "Failed":
+          return "bg-red-500/20 text-red-400";
         default:
-            return "bg-gray-500/20 text-gray-400";
+          return "bg-gray-500/20 text-gray-400";
       }
     }
 
@@ -93,9 +76,9 @@ function PodsPage() {
     <div className="space-y-6 p-4 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Pods</h2>
+        <h2 className="text-2xl font-semibold">PersistentVolumeClaims</h2>
         <div>
-          <p className="text-lg">{`${pods.length} Items`}</p>
+          <p className="text-lg">{`${pvcs.length} Items`}</p>
         </div>
         {/* ---- Namespace Selector ---- */}
         <div className="relative min-w-6">
@@ -117,7 +100,7 @@ function PodsPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading pods...</p>
+        <p className="text-gray-400">Loading PersistentVolumeClaims...</p>
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
@@ -127,32 +110,30 @@ function PodsPage() {
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Namespace</th>
-                <th className="px-4 py-3">Ready</th>
-                <th className="px-4 py-3">Restarts</th>
-                <th className="px-4 py-3">Controller</th>
+                <th className="px-4 py-3">Storage Class</th>
+                <th className="px-4 py-3">Size</th>
+                <th className="px-4 py-3">Volume</th>
                 <th className="px-4 py-3">Age</th>
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {pods.map((pod) => (
-                <tr key={`${pod.metadata.name}`} className="hover:bg-gray-800/50">
-                  <td className="px-4 py-3 font-medium">{pod.metadata.name}</td>
-                  <td className="px-4 py-3 font-medium">{pod.metadata.namespace}</td>
-                  <td className="px-4 py-3 text-gray-400">{`${countReady(pod)}/${pod.status.containerStatuses.length}`}</td>
-                  <td className="px-4 py-3 text-gray-400">{countRestart(pod)}</td>
-                  <td className="px-4 py-3 text-gray-400">{
-                    pod.metadata.ownerReferences ? pod.metadata.ownerReferences[0].kind : 'None'
-                  }</td>
-                  <td className="px-4 py-3 text-gray-400">{countAge(pod)}</td>
+              {pvcs.map((persistentvolumeclaim) => (
+                <tr key={`${persistentvolumeclaim.metadata.name}`} className="hover:bg-gray-800/50">
+                  <td className="px-4 py-3 font-medium">{persistentvolumeclaim.metadata.name}</td>
+                  <td className="px-4 py-3 text-gray-400">{persistentvolumeclaim.metadata.namespace}</td>
+                  <td className="px-4 py-3 text-gray-400">{persistentvolumeclaim.spec.storageClassName || "<none>"}</td>
+                  <td className="px-4 py-3 text-gray-400">{persistentvolumeclaim.spec.resources.requests.storage || "NaN"}</td>
+                  <td className="px-4 py-3 text-gray-400">{persistentvolumeclaim.spec.volumeName || "<unbound>"}</td>
+                  <td className="px-4 py-3 text-gray-400">{countAge(persistentvolumeclaim)}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`px-2 py-1 rounded-md text-xs font-medium ${statusColor(
-                        pod.status.phase
+                        persistentvolumeclaim.status.phase
                       )}`}
                     >
-                      {pod.status.phase}
+                      {persistentvolumeclaim.status.phase}
                     </span>
                   </td>
                 </tr>
@@ -164,5 +145,3 @@ function PodsPage() {
     </div>
     );
 }
-
-export default PodsPage;
