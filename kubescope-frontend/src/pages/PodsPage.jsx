@@ -21,12 +21,13 @@ function PodsPage() {
           data.forEach(ns => {
             nslist.push(ns.metadata.name);
           });
-          // console.log(nslist);
           setNamespaces(nslist);
-        } catch (err) {
+        } 
+        catch (err) {
           console.error("Failed to fetch namespaces:", err);
           setError(err);
-        } finally {
+        } 
+        finally {
           setLoading(false);
         }
       }
@@ -37,20 +38,22 @@ function PodsPage() {
     useEffect(() => {
       async function fetchPods() {
         try {
-            setLoading(true);
-            // Replace this with your Go backend call
-            const data = await getPods(currentNs);
-            // console.log(data);
-            if (data !== null) {
-              setPods(data);
-            } else {
-              setPods([]);
-            }
-        } catch (err) {
-            console.error("Failed to fetch pods:", err);
-            setError(err);
-        } finally {
-            setLoading(false);
+          setLoading(true);
+          // Replace this with your Go backend call
+          const data = await getPods(currentNs);
+          // console.log(data);
+          if (data !== null) {
+            setPods(data);
+          } else {
+            setPods([]);
+          }
+        } 
+        catch (err) {
+          console.error("Failed to fetch pods:", err);
+          setError(err);
+        } 
+        finally {
+          setLoading(false);
         }
       }
 
@@ -117,7 +120,7 @@ function PodsPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading pods...</p>
+        <p className="text-gray-400">Loading Pods...</p>
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
