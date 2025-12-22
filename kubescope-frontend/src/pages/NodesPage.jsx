@@ -20,7 +20,7 @@ export default function NodesPage() {
               setNodes([]);
             }
         } catch (err) {
-            console.error("Failed to fetch nodes:", err);
+            console.error("Failed to fetch Nodes:", err);
             setError(err);
         } finally {
             setLoading(false);
@@ -98,7 +98,7 @@ export default function NodesPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading nodes...</p>
+        <p className="text-gray-400">Loading Nodes...</p>
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (

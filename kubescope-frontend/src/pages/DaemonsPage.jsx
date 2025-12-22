@@ -47,7 +47,7 @@ export default function DaemonsPage() {
               setDaemonSets([]);
             }
         } catch (err) {
-            console.error("Failed to fetch pods:", err);
+            console.error("Failed to fetch DaemonSets:", err);
             setError(err);
         } finally {
             setLoading(false);

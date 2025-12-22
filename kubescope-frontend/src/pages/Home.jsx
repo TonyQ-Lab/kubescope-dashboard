@@ -25,7 +25,7 @@ export default function Home() {
           title="Explore Workloads"
           description="View pods, deployments, and stateful applications running in your cluster."
           icon={<Boxes className="w-6 h-6 sm:w-7 sm:h-7" />}
-          to="/workloads/pods"
+          to="/workload/pods"
         />
 
         <WelcomeCard

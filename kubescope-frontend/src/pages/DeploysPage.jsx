@@ -47,7 +47,7 @@ export default function DeploysPage() {
               setDeployments([]);
             }
         } catch (err) {
-            console.error("Failed to fetch pods:", err);
+            console.error("Failed to fetch Deployments:", err);
             setError(err);
         } finally {
             setLoading(false);

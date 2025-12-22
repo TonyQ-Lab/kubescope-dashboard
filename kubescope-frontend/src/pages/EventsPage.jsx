@@ -103,7 +103,7 @@ function EventsPage() {
 
       {/* ---- Loading ---- */}
       {loading ? (
-        <p className="text-gray-400">Loading events...</p>
+        <p className="text-gray-400">Loading Events...</p>
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (

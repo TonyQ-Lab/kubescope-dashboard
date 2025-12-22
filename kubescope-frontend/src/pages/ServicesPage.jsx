@@ -46,7 +46,7 @@ export default function ServicesPage() {
           setServices([]);
         }
       } catch (err) {
-        console.error("Failed to fetch StatefulSets:", err);
+        console.error("Failed to fetch Services:", err);
         setError(err);
       } finally {
         setLoading(false);
@@ -85,7 +85,7 @@ export default function ServicesPage() {
 
     {/* ---- Loading ---- */}
     {loading ? (
-      <p className="text-gray-400">Loading services...</p>
+      <p className="text-gray-400">Loading Services...</p>
     ) : error !== null ? (
       <p className="text-gray-400">{`${error}`}</p>
     ) : (
