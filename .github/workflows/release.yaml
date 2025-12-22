@@ -1,4 +1,4 @@
-name: Build
+name: Release
 
 on: 
   workflow_dispatch:
@@ -7,13 +7,15 @@ on:
         required: true
         type: string
         description: Image version to build
+  release:
+    types: [published]
 
 env:
   REGISTRY: docker.io
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  FRONTEND_IMAGE_NAME: tonyq2k3/kubescope-frontend:${{ inputs.version }}
-  BACKEND_IMAGE_NAME: tonyq2k3/kubescope-backend:${{ inputs.version }}
+  FRONTEND_IMAGE_NAME: tonyq2k3/kubescope-frontend:${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref }}
+  BACKEND_IMAGE_NAME: tonyq2k3/kubescope-backend:${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref }}
 
     
 jobs:
