@@ -9,6 +9,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { useState } from "react";
+import SubNavLink from "./SubNavLink";
 
 export default function SideBar() {
   const [openWorkloads, setOpenWorkloads] = useState(true);
@@ -63,22 +64,7 @@ export default function SideBar() {
         {openWorkloads && (
           <div className="flex flex-col space-y-1">
             {workloadItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                 className={({ isActive }) =>
-                  `
-                    pl-14 px-3 py-2 text-sm rounded-md transition
-                    ${
-                      isActive
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-400 hover:bg-gray-800/40"
-                    }
-                  `
-                }
-              >
-                {item.label}
-              </NavLink>
+              <SubNavLink item={item} />
             ))}
           </div>
         )}
@@ -106,22 +92,7 @@ export default function SideBar() {
         {openNetworks && (
           <div className="flex flex-col space-y-1">
             {networkItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                 className={({ isActive }) =>
-                  `
-                    pl-14 px-3 py-2 text-sm rounded-md transition
-                    ${
-                      isActive
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-400 hover:bg-gray-800/40"
-                    }
-                  `
-                }
-              >
-                {item.label}
-              </NavLink>
+              <SubNavLink item={item} />
             ))}
           </div>
         )}
@@ -185,22 +156,7 @@ export default function SideBar() {
         {openStorage && (
           <div className="flex flex-col space-y-1">
             {storageItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                 className={({ isActive }) =>
-                  `
-                    pl-14 px-3 py-2 text-sm rounded-md transition
-                    ${
-                      isActive
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-400 hover:bg-gray-800/40"
-                    }
-                  `
-                }
-              >
-                {item.label}
-              </NavLink>
+              <SubNavLink item={item} />
             ))}
           </div>
         )}
