@@ -14,7 +14,7 @@ spec:
         app: kubescope-frontend
     spec:
       containers:
-        - name: backend
+        - name: frontend
           image: tonyq2k3/kubescope-frontend:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
