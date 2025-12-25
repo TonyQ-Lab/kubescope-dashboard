@@ -1,0 +1,18 @@
+# General configuration
+global:
+  image:
+    pullPolicy: IfNotPresent
+
+# Dashboard front-end Image
+frontend:
+  image:
+    repository: tonyq2k3/kubescope-frontend
+    tag: "1.0.0"
+  replicas: 1
+
+# Dashboard back-end Image
+backend:
+  image:
+    repository: tonyq2k3/kubescope-backend
+    tag: "1.0.0"
+  replicas: 1

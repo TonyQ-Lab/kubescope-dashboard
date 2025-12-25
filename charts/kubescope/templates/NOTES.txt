@@ -1,0 +1,18 @@
+🎉 KubeScope has been successfully deployed!
+
+------------------------------------------------------------
+Release Name:   {{ .Release.Name }}
+Namespace:      {{ .Release.Namespace }}
+Application:    KubeScope
+Version:        {{ .Chart.Version }}
+------------------------------------------------------------
+
+🌐 Access the dashboard
+
+Use port-forward to access locally:
+
+  kubectl port-forward svc/kubescope-frontend 8080:80 -n {{ .Release.Namespace }}
+
+Then open:
+
+  http://localhost:8080
