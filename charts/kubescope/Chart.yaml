@@ -1,0 +1,14 @@
+apiVersion: v2
+name: kubescope
+description: A Kubernetes monitoring dashboard to give insights inside your cluster
+
+type: application
+keywords:
+- dashboard
+- monitoring
+
+version: 1.0.0
+appVersion: "1.0.0"
+
+sources:
+- https://github.com/TonyQ-Lab/kubescope-dashboard
