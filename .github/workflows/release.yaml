@@ -14,8 +14,8 @@ env:
   REGISTRY: docker.io
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  FRONTEND_IMAGE_NAME: tonyq2k3/kubescope-frontend:${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref }}
-  BACKEND_IMAGE_NAME: tonyq2k3/kubescope-backend:${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref }}
+  FRONTEND_IMAGE_NAME: tonyq2k3/kubescope-frontend:${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
+  BACKEND_IMAGE_NAME: tonyq2k3/kubescope-backend:${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
 
     
 jobs:
