@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: tonyq2k3/kubescope-frontend:1.0.0
+          image: tonyq2k3/kubescope-frontend:v1.0.1
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 80
