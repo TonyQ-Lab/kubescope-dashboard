@@ -1,0 +1,19 @@
+apiVersion: v1
+entries:
+  kubescope:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-12-28T04:58:08.142361941Z"
+    description: A Kubernetes monitoring dashboard to give insights inside your cluster
+    digest: fae9d0b17e8a8074b278b40b3da58c2622388ca7c6f65c4f4b9922df29e66c9f
+    keywords:
+    - dashboard
+    - monitoring
+    name: kubescope
+    sources:
+    - https://github.com/TonyQ-Lab/kubescope-dashboard
+    type: application
+    urls:
+    - https://github.com/TonyQ-Lab/kubescope-dashboard/releases/download/helm-chart-1.0.0/kubescope-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-12-28T04:58:08.142371628Z"
