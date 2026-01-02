@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getServices } from "../api/index";
-import { ChevronDown } from "lucide-react";
 import { countAge, getPortString, getExternalIP } from "../utils";
+import NamespaceSelector from "../components/NamespaceSelector";
 
 export default function ServicesPage() {
   const [services, setServices] = useState([]);
@@ -66,21 +66,7 @@ export default function ServicesPage() {
         <p className="text-lg">{`${services.length} Items`}</p>
       </div>
       {/* ---- Namespace Selector ---- */}
-      <div className="relative min-w-6">
-        <select
-          value={currentNs}
-          onChange={(e) => setCurrentNS(e.target.value)}
-          className="w-full sm:w-[280px] md:w-[320px] pl-3 pr-10 py-2.5 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer transition-colors"
-        >
-          <option value="all">All Namespaces</option>
-          {namespaces.map((ns) => (
-            <option key={ns} value={ns}>
-              {ns}
-            </option>
-          ))}
-        </select>
-        <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-      </div>
+      <NamespaceSelector currentNS={currentNs} setCurrentNS={setCurrentNS} namespaces={namespaces} />
     </div>
 
     {/* ---- Loading ---- */}

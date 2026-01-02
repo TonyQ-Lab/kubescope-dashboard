@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getEvents } from "../api";
 import { countAge } from "../utils";
-import { ChevronDown } from "lucide-react";
+import NamespaceSelector from "../components/NamespaceSelector"
 
 function EventsPage() {
     const [events, setEvents] = useState([]);
@@ -40,7 +40,6 @@ function EventsPage() {
             setLoading(true);
             // Replace this with your Go backend call
             const data = await getEvents(currentNs);
-            console.log(data);
             if (data !== null) {
               setEvents(data);
             } else {
@@ -84,21 +83,7 @@ function EventsPage() {
           <p className="text-lg">{`${events.length} Items`}</p>
         </div>
         {/* ---- Namespace Selector ---- */}
-        <div className="relative min-w-6">
-          <select
-            value={currentNs}
-            onChange={(e) => setCurrentNS(e.target.value)}
-            className="w-full sm:w-[280px] md:w-[320px] pl-3 pr-10 py-2.5 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 rounded-lg text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer transition-colors"
-          >
-            <option value="all">All Namespaces</option>
-            {namespaces.map((ns) => (
-              <option key={ns} value={ns}>
-                {ns}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
+        <NamespaceSelector currentNS={currentNs} setCurrentNS={setCurrentNS} namespaces={namespaces} />
       </div>
 
       {/* ---- Loading ---- */}
@@ -135,7 +120,7 @@ function EventsPage() {
                   <td className="px-4 py-3 text-gray-400">{event.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400 max-w-md">
                     <div className='line-clamp-2'>
-                      {event.message.length > 0 ? event.message : "<none>"}
+                      {event.message ? event.message : "<none>"}
                     </div>
                   </td>
                   <td className="px-4 py-3 text-gray-400">{getInvolvedObject(event.involvedObject)}</td>
