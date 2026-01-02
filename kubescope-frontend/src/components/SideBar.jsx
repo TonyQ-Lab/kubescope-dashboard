@@ -8,13 +8,41 @@ import {
   Logs,
   ChevronDown
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import SubNavLink from "./SubNavLink";
 
-export default function SideBar() {
+export default function SideBar({ width, onResize }) {
   const [openWorkloads, setOpenWorkloads] = useState(true);
   const [openNetworks, setOpenNetworks] = useState(false);
   const [openStorage, setOpenStorage] = useState(false);
+
+  const MINWIDTH = 220;
+  const MAXWIDTH = 300;
+  const isResizing = useRef(false);
+
+  function onMouseDown() {
+    isResizing.current = true;
+    document.body.style.cursor = "col-resize";
+  }
+
+  function onMouseMove(e) {
+    if (!isResizing.current)
+      return;
+
+    const newWidth = e.clientX;
+    if (newWidth <= MAXWIDTH && newWidth >= MINWIDTH) {
+      onResize(newWidth);
+    }
+  }
+
+  function onMouseUp() {
+    isResizing.current = false;
+    document.body.style.cursor = "default";
+  }
+
+  // Attach listeners globally
+  window.addEventListener("mousemove", onMouseMove);
+  window.addEventListener("mouseup", onMouseUp);
   
   const workloadItems = [
     { label: "Pods", path: "/workload/pods" },
@@ -35,11 +63,10 @@ export default function SideBar() {
   ]
 
   return (
-     <div className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col">
+     <div className="relative bg-gray-900 border-r border-gray-800 flex flex-col" style={{ width }}>
       <div className="h-16 flex items-center px-6 border-b border-gray-800">
         <Link to="/" className="text-xl font-bold tracking-wide text-blue-500">KubeScope</Link>
       </div>
-
       <nav className="flex-1 py-4 space-y-1">
         {/* --- Collapsible Workloads Section --- */}
         <button
@@ -160,8 +187,17 @@ export default function SideBar() {
             ))}
           </div>
         )}
-
       </nav>
+      {/* Resize handle */}
+      <div
+        onMouseDown={onMouseDown}
+        className="
+          absolute top-0 right-0 h-full w-1
+          cursor-col-resize
+          hover:bg-blue-500/40
+          transition
+        "
+      />
     </div>
   );
 }
