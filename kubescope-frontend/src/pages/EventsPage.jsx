@@ -135,7 +135,7 @@ function EventsPage() {
                   <td className="px-4 py-3 text-gray-400">{event.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400 max-w-md">
                     <div className='line-clamp-2'>
-                      {event.message}
+                      {event.message.length > 0 ? event.message : "<none>"}
                     </div>
                   </td>
                   <td className="px-4 py-3 text-gray-400">{getInvolvedObject(event.involvedObject)}</td>
