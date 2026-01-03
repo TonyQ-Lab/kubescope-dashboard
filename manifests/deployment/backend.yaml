@@ -16,7 +16,7 @@ spec:
       serviceAccountName: kubescope-account
       containers:
         - name: backend
-          image: tonyq2k3/kubescope-backend:v1.0.1
+          image: tonyq2k3/kubescope-backend:v1.0.2
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 80
