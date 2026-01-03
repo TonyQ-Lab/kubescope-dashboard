@@ -7,12 +7,12 @@ global:
 frontend:
   image:
     repository: tonyq2k3/kubescope-frontend
-    tag: "v1.0.1"
+    tag: "v1.0.2"
   replicas: 1
 
 # Dashboard back-end Image
 backend:
   image:
     repository: tonyq2k3/kubescope-backend
-    tag: "v1.0.1"
+    tag: "v1.0.2"
   replicas: 1
