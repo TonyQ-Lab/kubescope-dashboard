@@ -7,6 +7,8 @@ on:
       - 'docs/**'
       - 'zensical.toml'
 
+  workflow_dispatch:
+    
 
 permissions:
   contents: read
@@ -19,15 +21,35 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/configure-pages@v5
+
       - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
+
       - run: pip install zensical
+
       - run: zensical build --clean
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: site
-      - uses: actions/deploy-pages@v4
-        id: deployment
+
+      - name: Deploy to gh-pages
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          
+          # Switch to gh-pages branch
+          git fetch origin
+          git checkout gh-pages || git checkout --orphan gh-pages
+          
+          # Clear old files
+          rm -rf !(index.yaml)
+          
+          # Copy build output
+          cp -r site/* .
+          
+          # Commit and push
+          git add .
+          git commit -m "Deploy from main" || echo "No changes to commit"
+          git push origin gh-pages --force
