@@ -39,7 +39,7 @@ If you use kubectl, follow the instructions [here](./manifests).
 
 **Option 2: Using Helm**
 
-If you use Helm, install the chart [here](./charts/).
+If you use Helm, install the chart [here](./charts/kubescope).
 
 
 ## 🙌 Acknowledgements
