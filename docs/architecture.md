@@ -4,7 +4,7 @@ icon: lucide/server-cog
 
 # Architecture
 
-This diagram illustrates the architecture of KubeScope and some of its components:
+This diagram illustrates the architecture of KubeScope and its components:
 
 ![KubeScope Diagram](imgs/architecture_light.png#only-light){ align=center }
 ![KubeScope Diagram](imgs/architecture_dark.png#only-dark){ align=center }

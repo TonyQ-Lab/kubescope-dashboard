@@ -28,3 +28,17 @@ The following frameworks/libraries are used in the development of this project.
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-FFFFFF?style=for-the-badge&logo=tailwindcss&logoColor=61DAFB)](https://tailwindcss.com)
 [![Client-Go](https://img.shields.io/badge/ClientGo-FFFFFF?style=for-the-badge&logo=go&logoColor=00ADD8)](https://github.com/kubernetes/client-go)
 [![Gin](https://img.shields.io/badge/Gin-FFFFFF?style=for-the-badge&logo=gin&logoColor=008ECF)](https://github.com/gin-gonic/gin)
+
+## Contribution
+
+KubeScope is currently a single-maintainer project. While direct code contributions are not open at this time, community feedback is highly valued and plays an important role in shaping the project.
+
+If you would like to help improve KubeScope, you can:
+
++ Report bugs
+
++ Suggest new features or enhancements
+
++ Ask questions or propose ideas
+
+Please do so by opening an issue on the project’s GitHub repository. Clear descriptions, steps to reproduce, and screenshots (if applicable) are greatly appreciated.
