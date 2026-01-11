@@ -91,7 +91,7 @@ export default function SideBar({ width, onResize }) {
         {openWorkloads && (
           <div className="flex flex-col space-y-1">
             {workloadItems.map((item) => (
-              <SubNavLink item={item} />
+              <SubNavLink key={item.label} item={item} />
             ))}
           </div>
         )}
@@ -119,7 +119,7 @@ export default function SideBar({ width, onResize }) {
         {openNetworks && (
           <div className="flex flex-col space-y-1">
             {networkItems.map((item) => (
-              <SubNavLink item={item} />
+              <SubNavLink key={item.label} item={item} />
             ))}
           </div>
         )}
@@ -183,7 +183,7 @@ export default function SideBar({ width, onResize }) {
         {openStorage && (
           <div className="flex flex-col space-y-1">
             {storageItems.map((item) => (
-              <SubNavLink item={item} />
+              <SubNavLink key={item.label} item={item} />
             ))}
           </div>
         )}
