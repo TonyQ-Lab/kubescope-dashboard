@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getNodes } from "../api/index";
-import { countAge } from "../utils";
+import { countAge, sortObjects } from "../utils";
+import SortableHeader from "../components/SortableHeader";
 
 export default function NodesPage() {
     const [nodes, setNodes] = useState([]);
@@ -15,7 +16,10 @@ export default function NodesPage() {
             const data = await getNodes();
             // console.log(data);
             if (data !== null) {
-              setNodes(data);
+              setNodes(sortObjects(data, {
+                key: "age",
+                order: "asc"
+              }));
             } else {
               setNodes([]);
             }
@@ -28,6 +32,20 @@ export default function NodesPage() {
       }
       fetchNodes();
     }, [])
+
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      // console.log(`Sort called: ${key} - ${sortBy.order}`);
+      setNodes((old) => sortObjects(old, sortBy));
+    }
 
     function getStatus(node) {
         let memoryPressure = false;
@@ -106,11 +124,11 @@ export default function NodesPage() {
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
-                <th className="px-4 py-3">Name</th>
+                <SortableHeader label="Name" column="name" onSort={handleSort} />
                 <th className="px-4 py-3">Taints</th>
                 <th className="px-4 py-3">Roles</th>
                 <th className="px-4 py-3">Version</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
