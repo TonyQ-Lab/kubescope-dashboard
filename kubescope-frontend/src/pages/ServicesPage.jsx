@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getServices } from "../api/index";
-import { countAge, getPortString, getExternalIP } from "../utils";
+import { countAge, getPortString, getExternalIP, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
+import SortableHeader from "../components/SortableHeader";
 
 export default function ServicesPage() {
   const [services, setServices] = useState([]);
@@ -41,7 +42,10 @@ export default function ServicesPage() {
         const data = await getServices(currentNs);
         // console.log(data);
         if (data !== null) {
-          setServices(data);
+          setServices(sortObjects(data, {
+            key: "age",
+            order: "asc"
+          }));
         } else {
           setServices([]);
         }
@@ -55,6 +59,20 @@ export default function ServicesPage() {
 
     fetchServices();
   }, [currentNs])
+
+  const [sortBy, setSortBy] = useState({
+    key: "age",
+    order: "asc"
+  })
+
+  function handleSort(key) {
+    setSortBy((prev) => ({
+      key,
+      order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+    }))
+    console.log(`Sort called: ${key} - ${sortBy.order}`);
+    setServices((old) => sortObjects(old, sortBy));
+  }
 
 
   return (
@@ -79,13 +97,13 @@ export default function ServicesPage() {
         <table className="w-full text-left text-sm min-w-max">
           <thead className="bg-gray-800/50 text-gray-300">
             <tr>
-              <th className="px-4 py-3">Name</th>
+              <SortableHeader label="Name" column="name" onSort={handleSort} />
               <th className="px-4 py-3">Namespace</th>
               <th className="px-4 py-3">Type</th>
               <th className="px-4 py-3">ClusterIP</th>
               <th className="px-4 py-3">Ports</th>
               <th className="px-4 py-3">External-IP</th>
-              <th className="px-4 py-3">Age</th>
+              <SortableHeader label="Age" column="age" onSort={handleSort} />
             </tr>
           </thead>
 
