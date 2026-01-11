@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getPVs } from "../api/index";
-import { countAge } from "../utils";
+import { countAge, sortObjects } from "../utils";
+import SortableHeader from "../components/SortableHeader";
 
 export default function PVPage() {
     const [pvs, setPVs] = useState([]);
@@ -15,7 +16,10 @@ export default function PVPage() {
             const data = await getPVs();
             // console.log(data);
             if (data !== null) {
-              setPVs(data);
+              setPVs(sortObjects(data, {
+                key: "age",
+                order: "asc"
+              }));
             } else {
               setPVs([]);
             }
@@ -28,6 +32,20 @@ export default function PVPage() {
       }
       fetchPVs();
     }, []);
+
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      // console.log(`Sort called: ${key} - ${sortBy.order}`);
+      setPVs((old) => sortObjects(old, sortBy));
+    }
 
     // function getAccessModes(pv) {
     //   const accessmodes = pv.spec.accessModes;
@@ -73,12 +91,12 @@ export default function PVPage() {
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
-                <th className="px-4 py-3">Name</th>
+                <SortableHeader label="Name" column="name" onSort={handleSort} />
                 <th className="px-4 py-3">Storage Class</th>
                 <th className="px-4 py-3">Capacity</th>
                 <th className="px-4 py-3">Reclaim Policy</th>
                 <th className="px-4 py-3">Claim</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>

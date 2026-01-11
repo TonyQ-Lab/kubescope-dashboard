@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getPVCs, getNamespaces } from "../api/index";
-import { countAge } from "../utils";
+import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector"
+import SortableHeader from "../components/SortableHeader";
 
 export default function PVCPage() {
     const [pvcs, setPVCs] = useState([]);
@@ -42,7 +43,10 @@ export default function PVCPage() {
             const data = await getPVCs(currentNs);
             // console.log(data);
             if (data !== null) {
-              setPVCs(data);
+              setPVCs(sortObjects(data, {
+                key: "age",
+                order: "asc"
+              }));
             } else {
               setPVCs([]);
             }
@@ -55,6 +59,20 @@ export default function PVCPage() {
       }
       fetchPVCs();
     }, [currentNs]);
+
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      // console.log(`Sort called: ${key} - ${sortBy.order}`);
+      setPVCs((old) => sortObjects(old, sortBy));
+    }
 
 
     function statusColor(status) {
@@ -94,12 +112,12 @@ export default function PVCPage() {
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
-                <th className="px-4 py-3">Name</th>
+                <SortableHeader label="Name" column="name" onSort={handleSort} />
                 <th className="px-4 py-3">Namespace</th>
                 <th className="px-4 py-3">Storage Class</th>
                 <th className="px-4 py-3">Size</th>
                 <th className="px-4 py-3">Volume</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
