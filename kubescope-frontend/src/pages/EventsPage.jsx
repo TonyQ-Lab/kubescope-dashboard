@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getEvents } from "../api";
-import { countAge } from "../utils";
+import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector"
+import SortableHeader from "../components/SortableHeader";
 
 function EventsPage() {
     const [events, setEvents] = useState([]);
@@ -41,7 +42,11 @@ function EventsPage() {
             // Replace this with your Go backend call
             const data = await getEvents(currentNs);
             if (data !== null) {
-              setEvents(data);
+              // setEvents(data);
+              setEvents(sortObjects(data, {
+                key: "age",
+                order: "asc"
+              }))
             } else {
               setEvents([]);
             }
@@ -55,6 +60,19 @@ function EventsPage() {
 
       fetchEvents();
     }, [currentNs])
+
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      setEvents((old) => sortObjects(old, sortBy));
+    }
 
     function statusColor(status) {
       switch (status) {
@@ -101,7 +119,7 @@ function EventsPage() {
                 <th className="px-4 py-3">Message</th>
                 <th className="px-4 py-3">Involved Object</th>
                 <th className="px-4 py-3">Source</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
               </tr>
             </thead>
 
