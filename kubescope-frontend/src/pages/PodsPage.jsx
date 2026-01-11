@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getPods } from "../api/index";
-import { countAge } from "../utils";
+import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
+import SortableHeader from "../components/SortableHeader";
 
 function PodsPage() {
     const [pods, setPods] = useState([]);
@@ -43,7 +44,10 @@ function PodsPage() {
           const data = await getPods(currentNs);
           // console.log(data);
           if (data !== null) {
-            setPods(data);
+            setPods(sortObjects(data, {
+              key: "age",
+              order: "asc"
+            }))
           } else {
             setPods([]);
           }
@@ -60,6 +64,19 @@ function PodsPage() {
       fetchPods();
     }, [currentNs])
 
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      console.log("Sort called");
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      setPods((old) => sortObjects(old, sortBy));
+    }
 
     function countReady(pod){
       let ready = 0;
@@ -114,12 +131,12 @@ function PodsPage() {
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
-                <th className="px-4 py-3">Name</th>
+                <SortableHeader label="Name" column="name" onSort={handleSort} />
                 <th className="px-4 py-3">Namespace</th>
                 <th className="px-4 py-3">Ready</th>
                 <th className="px-4 py-3">Restarts</th>
                 <th className="px-4 py-3">Controller</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>

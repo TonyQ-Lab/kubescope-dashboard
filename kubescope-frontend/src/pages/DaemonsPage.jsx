@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getDaemonSets } from "../api/index";
-import { countAge } from "../utils";
-import NamespaceSelector from "../components/NamespaceSelector"
+import { countAge, sortObjects } from "../utils";
+import NamespaceSelector from "../components/NamespaceSelector";
+import SortableHeader from "../components/SortableHeader";
 
 export default function DaemonsPage() {
     const [daemonsets, setDaemonSets] = useState([]);
@@ -40,9 +41,11 @@ export default function DaemonsPage() {
             setLoading(true);
             // Replace this with your Go backend call
             const data = await getDaemonSets(currentNs);
-            // console.log(data);
             if (data !== null) {
-              setDaemonSets(data);
+              setDaemonSets(sortObjects(data, {
+                key: "age",
+                order: "asc"
+              }));
             } else {
               setDaemonSets([]);
             }
@@ -55,6 +58,20 @@ export default function DaemonsPage() {
       }
       fetchDaemonsets();
     }, [currentNs])
+
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      // console.log(`Sort called: ${key} - ${sortBy.order}`);
+      setDaemonSets((old) => sortObjects(old, sortBy));
+    }
 
 
     return (
@@ -79,12 +96,12 @@ export default function DaemonsPage() {
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
-                <th className="px-4 py-3">Name</th>
+                <SortableHeader label="Name" column="name" onSort={handleSort} />
                 <th className="px-4 py-3">Namespace</th>
                 <th className="px-4 py-3">Scheduled</th>
                 <th className="px-4 py-3">Up-to-date</th>
                 <th className="px-4 py-3">Available</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
               </tr>
             </thead>
 
