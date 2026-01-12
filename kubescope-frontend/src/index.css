@@ -15,3 +15,7 @@ body {
     color-scheme: dark;
   }
 }
+
+.sort-arrow {
+  @apply ml-1 inline w-4 h-4 text-gray-400 hover:text-gray-100;
+}

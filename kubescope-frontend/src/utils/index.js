@@ -1,31 +1,31 @@
 export function countAge(object) {
     const now = new Date();
-      const pastTimestamp = new Date(object.metadata.creationTimestamp);
+    const pastTimestamp = new Date(object.metadata.creationTimestamp);
 
-      const timeDifference = now.getTime() - pastTimestamp.getTime();
-      const seconds = Math.floor(timeDifference / 1000);
-      const minutes = Math.floor(seconds / 60);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
-      const weeks = Math.floor(days / 7);
-      const months = Math.floor(days / 30);
-      const years = Math.floor(days / 365);
+    const timeDifference = now.getTime() - pastTimestamp.getTime();
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
 
-      if (years > 0) {
-          return `${years}y`;
-      } else if (months > 0) {
-          return `${months}m`;
-      } else if (weeks > 0) {
-          return `${weeks}w`;
-      } else if (days > 0) {
-          return `${days}d`;
-      } else if (hours > 0) {
-          return `${hours}h`;
-      } else if (minutes > 0) {
-          return `${minutes}m`;
-      } else {
-          return `${seconds}s`;
-      }
+    if (years > 0) {
+        return `${years}y`;
+    } else if (months > 0) {
+        return `${months}m`;
+    } else if (weeks > 0) {
+        return `${weeks}w`;
+    } else if (days > 0) {
+        return `${days}d`;
+    } else if (hours > 0) {
+        return `${hours}h`;
+    } else if (minutes > 0) {
+        return `${minutes}m`;
+    } else {
+        return `${seconds}s`;
+    }
 }
 
 export function getPortString(ports) {
@@ -49,4 +49,41 @@ export function getExternalIP(service) {
         else return "<pending>";
     }
     return "<pending>";
+}
+
+function sortByAge(objectA, objectB) {
+    const now = new Date();
+    const timestampA = new Date(objectA.metadata.creationTimestamp);
+    const timestampB = new Date(objectB.metadata.creationTimestamp);
+
+    const ageA = now.getTime() - timestampA.getTime();
+    const ageB = now.getTime() - timestampB.getTime();
+
+    return ageA - ageB;
+}
+
+function sortByName(objectA, objectB) {
+    const nameA = String(objectA.metadata.name);
+    const nameB = String(objectB.metadata.name);
+    return nameA.localeCompare(nameB);
+}
+
+export function sortObjects(objects, sortConfig) {
+    switch (sortConfig.key) {
+        case "age":
+            objects.sort(sortByAge);
+            break;
+        case "name":
+            objects.sort(sortByName);
+            break;
+        default:
+            objects.sort(sortByAge);
+            break;
+    }
+    switch (sortConfig.order) {
+        case "desc":
+            return objects.reverse();
+        default:
+            return objects;
+    }
 }

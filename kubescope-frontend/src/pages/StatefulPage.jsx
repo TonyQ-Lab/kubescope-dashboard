@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getNamespaces, getStatefulSets } from "../api/index";
-import { countAge } from "../utils";
-import NamespaceSelector from "../components/NamespaceSelector"
+import { countAge, sortObjects } from "../utils";
+import NamespaceSelector from "../components/NamespaceSelector";
+import SortableHeader from "../components/SortableHeader";
 
 export default function StatefulPage() {
     const [statefulsets, setStatefulSets] = useState([]);
@@ -42,7 +43,10 @@ export default function StatefulPage() {
           const data = await getStatefulSets(currentNs);
           // console.log(data);
           if (data !== null) {
-            setStatefulSets(data);
+            setStatefulSets(sortObjects(data, {
+              key: "age",
+              order: "asc"
+            }));
           } else {
             setStatefulSets([]);
           }
@@ -57,6 +61,19 @@ export default function StatefulPage() {
       fetchStatefulSets();
     }, [currentNs])
 
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      // console.log(`Sort called: ${key} - ${sortBy.order}`);
+      setStatefulSets((old) => sortObjects(old, sortBy));
+    }
 
     return (
     <div className="space-y-6 p-4 h-full w-full">
@@ -80,12 +97,12 @@ export default function StatefulPage() {
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
-                <th className="px-4 py-3">Name</th>
+                <SortableHeader label="Name" column="name" onSort={handleSort} />
                 <th className="px-4 py-3">Namespace</th>
                 <th className="px-4 py-3">Ready</th>
                 <th className="px-4 py-3">Up-to-date</th>
                 <th className="px-4 py-3">Available</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
               </tr>
             </thead>
 

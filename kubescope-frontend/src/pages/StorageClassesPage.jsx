@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getStorageClasses } from "../api/index";
-import { countAge } from "../utils";
+import { countAge, sortObjects } from "../utils";
+import SortableHeader from "../components/SortableHeader";
 
 export default function StorageClassesPage() {
     const [storageclasses, setStorageclasses] = useState([]);
@@ -10,24 +11,41 @@ export default function StorageClassesPage() {
     useEffect(() => {
       async function fetchSCs() {
         try {
-            setLoading(true);
-            // Replace this with your Go backend call
-            const data = await getStorageClasses();
-            // console.log(data);
-            if (data !== null) {
-              setStorageclasses(data);
-            } else {
-              setStorageclasses([]);
-            }
+          setLoading(true);
+          // Replace this with your Go backend call
+          const data = await getStorageClasses();
+          // console.log(data);
+          if (data !== null) {
+            setStorageclasses(sortObjects(data, {
+              key: "age",
+              order: "asc"
+            }));
+          } else {
+            setStorageclasses([]);
+          }
         } catch (err) {
-            console.error("Failed to fetch StorageClasses:", err);
-            setError(err);
+          console.error("Failed to fetch StorageClasses:", err);
+          setError(err);
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
       }
       fetchSCs();
     }, []);
+
+    const [sortBy, setSortBy] = useState({
+      key: "age",
+      order: "asc"
+    })
+
+    function handleSort(key) {
+      setSortBy((prev) => ({
+        key,
+        order: prev.key === key && prev.order === "asc" ? "desc" : "asc",
+      }))
+      // console.log(`Sort called: ${key} - ${sortBy.order}`);
+      setStorageclasses((old) => sortObjects(old, sortBy));
+    }
 
     function checkDefault(annotations) {
         if (annotations["storageclass.kubernetes.io/is-default-class"] && annotations["storageclass.kubernetes.io/is-default-class"] === "true")
@@ -55,12 +73,12 @@ export default function StorageClassesPage() {
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
-                <th className="px-4 py-3">Name</th>
+                <SortableHeader label="Name" column="name" onSort={handleSort} />
                 <th className="px-4 py-3">Provisioner</th>
                 <th className="px-4 py-3">Reclaim Policy</th>
                 <th className="px-4 py-3">Default</th>
                 <th className="px-4 py-3">Binding Mode</th>
-                <th className="px-4 py-3">Age</th>
+                <SortableHeader label="Age" column="age" onSort={handleSort} />
               </tr>
             </thead>
 
