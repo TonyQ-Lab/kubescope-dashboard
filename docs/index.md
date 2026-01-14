@@ -4,9 +4,10 @@ icon: lucide/rocket
 
 # Getting started
 
-Welcome to the documentation for KubeScope Monitoring Dashboard.
+Welcome to the documentation for KubeScope.
 
 This project is built around Kubernetes's [Go client](https://github.com/kubernetes/client-go), which allow clients to query data from the API server.
+
 
 ## Features
 
@@ -14,11 +15,11 @@ _This project is still a WIP, new features will be added regularly._
 
 + **Cluster Overview** – Nodes, namespaces, and workload status
 
-+ **Workload Monitoring** – Deployments, Pods, ReplicaSets, and more
++ **Workload** – Deployments, Pods, ReplicaSets, and more
 
 + **Events** - Detailed event information inside the cluster
 
-+ **User-Friendly Interface**: Intuitive UI for navigating and analyzing metrics.
++ **User-Friendly Interface** - Web UI for navigating the dashboard.
 
 ## Tech Stack
 
