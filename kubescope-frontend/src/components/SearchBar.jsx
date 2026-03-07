@@ -10,7 +10,7 @@ export default function SearchBar({ searchTerm, setSearchTerm }) {
 
         <input
             type="text"
-            placeholder="Search pod name..."
+            placeholder="Search by name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 
