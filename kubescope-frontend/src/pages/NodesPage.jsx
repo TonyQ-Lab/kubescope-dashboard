@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { getNodes } from "../api/index";
 import { countAge, sortObjects } from "../utils";
 import SortableHeader from "../components/SortableHeader";
+import SearchBar from "../components/SearchBar";
 
 export default function NodesPage() {
     const [nodes, setNodes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -104,13 +106,19 @@ export default function NodesPage() {
         return roles.join(", ");
     }
 
+    const filteredNodes = nodes.filter((node) =>
+      node.metadata.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return ( 
     <div className="space-y-6 p-4 mt-1 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-end justify-between">
         <h2 className="text-2xl font-semibold mr-12">Nodes</h2>
-        <div>
-          <p className="text-lg">{`${nodes.length} Items`}</p>
+        
+        <div className="flex items-center gap-4">
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+          <div><p className="text-lg">{`${filteredNodes.length} Items`}</p></div>
         </div>
       </div>
 
@@ -134,7 +142,7 @@ export default function NodesPage() {
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {nodes.map((node) => (
+              {filteredNodes.map((node) => (
                 <tr key={`${node.metadata.name}`} className="hover:bg-gray-800/50">
                   <td className="px-4 py-3 font-medium">{node.metadata.name}</td>
                   <td className="px-4 py-3 text-gray-400 max-w-md">

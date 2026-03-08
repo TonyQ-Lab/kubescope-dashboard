@@ -12,9 +12,7 @@ export default function Home() {
         </h1>
 
         <p className="text-sm sm:text-base text-gray-400 max-w-2xl">
-          A lightweight Kubernetes dashboard designed for real-time
-          visibility into your cluster workloads, nodes, and resources —
-          inspired by Lens, built for the web.
+          A lightweight Kubernetes dashboard showing your cluster workloads, nodes, and resources. Basically kubectl with an UI, built for the web.
         </p>
       </div>
 
@@ -47,8 +45,7 @@ export default function Home() {
 
       {/* ---- Footer hint ---- */}
       <div className="text-xs sm:text-sm text-gray-500 border-t border-gray-800 pt-4 sm:pt-6">
-        Tip: Use the left sidebar to navigate resources. More features will
-        appear here as your cluster grows.
+        Note: This project is still a WIP. More features will be added as the project grows.
       </div>
     </div>
   );

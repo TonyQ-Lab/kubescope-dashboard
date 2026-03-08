@@ -3,6 +3,7 @@ import { getNamespaces, getServices } from "../api/index";
 import { countAge, getPortString, getExternalIP, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
 import SortableHeader from "../components/SortableHeader";
+import SearchBar from "../components/SearchBar";
 
 export default function ServicesPage() {
   const [services, setServices] = useState([]);
@@ -11,6 +12,7 @@ export default function ServicesPage() {
     "default"
   ])
   const [currentNs, setCurrentNS] = useState("default");
+  const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -74,14 +76,19 @@ export default function ServicesPage() {
     setServices((old) => sortObjects(old, sortBy));
   }
 
+  const filteredServices = services.filter((svc) =>
+    svc.metadata.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
   <div className="space-y-6 p-4 h-full w-full">
     {/* ---- Header ---- */}
     <div className="flex items-center justify-between">
       <h2 className="text-2xl font-semibold">Services</h2>
-      <div>
-        <p className="text-lg">{`${services.length} Items`}</p>
+
+      <div className="flex items-center gap-4">
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+        <div><p className="text-lg">{`${filteredServices.length} Items`}</p></div>
       </div>
       {/* ---- Namespace Selector ---- */}
       <NamespaceSelector currentNS={currentNs} setCurrentNS={setCurrentNS} namespaces={namespaces} />
@@ -108,7 +115,7 @@ export default function ServicesPage() {
           </thead>
 
           <tbody className="divide-y divide-gray-800">
-            {services.map((service) => (
+            {filteredServices.map((service) => (
               <tr key={`${service.metadata.name}`} className="hover:bg-gray-800/50">
                 <td className="px-4 py-3 font-medium">{service.metadata.name}</td>
                 <td className="px-4 py-3 font-medium">{service.metadata.namespace}</td>

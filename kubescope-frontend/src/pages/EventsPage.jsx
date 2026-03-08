@@ -3,6 +3,7 @@ import { getNamespaces, getEvents } from "../api";
 import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector"
 import SortableHeader from "../components/SortableHeader";
+import SearchBar from "../components/SearchBar";
 
 function EventsPage() {
     const [events, setEvents] = useState([]);
@@ -11,6 +12,7 @@ function EventsPage() {
       "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
+    const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -91,14 +93,18 @@ function EventsPage() {
       return "Unknown";
     }
 
+    const filteredEvents = events.filter((event) =>
+      (event.message?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+    );
 
     return ( 
     <div className="space-y-6 p-4 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Events</h2>
-        <div>
-          <p className="text-lg">{`${events.length} Items`}</p>
+        <div className="flex items-center gap-4">
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search by message..."/>
+          <div><p className="text-lg">{`${filteredEvents.length} Items`}</p></div>
         </div>
         {/* ---- Namespace Selector ---- */}
         <NamespaceSelector currentNS={currentNs} setCurrentNS={setCurrentNS} namespaces={namespaces} />
@@ -124,7 +130,7 @@ function EventsPage() {
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {events.map((event) => (
+              {filteredEvents.map((event) => (
                 <tr key={`${event.metadata.name}`} className="hover:bg-gray-800/50">
                   <td className="px-4 py-3">
                     <span

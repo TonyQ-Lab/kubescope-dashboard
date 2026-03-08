@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { getPVs } from "../api/index";
 import { countAge, sortObjects } from "../utils";
 import SortableHeader from "../components/SortableHeader";
+import SearchBar from "../components/SearchBar";
 
 export default function PVPage() {
     const [pvs, setPVs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -71,13 +73,18 @@ export default function PVPage() {
       }
     }
 
+    const filteredPVs = pvs.filter((pv) =>
+      pv.metadata.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return ( 
     <div className="space-y-6 p-4 mt-1 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-end justify-between">
         <h2 className="text-2xl font-semibold mr-12">PersistentVolumes</h2>
-        <div>
-          <p className="text-lg">{`${pvs.length} Items`}</p>
+        <div className="flex items-center gap-4">
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+          <div><p className="text-lg">{`${filteredPVs.length} Items`}</p></div>
         </div>
       </div>
 
@@ -102,7 +109,7 @@ export default function PVPage() {
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {pvs.map((persistentvolume) => (
+              {filteredPVs.map((persistentvolume) => (
                 <tr key={`${persistentvolume.metadata.name}`} className="hover:bg-gray-800/50">
                   <td className="px-4 py-3 font-medium">{persistentvolume.metadata.name}</td>
                   <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.storageClassName || "<none>"}</td>

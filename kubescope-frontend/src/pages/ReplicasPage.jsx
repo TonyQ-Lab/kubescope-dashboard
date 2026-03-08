@@ -3,6 +3,7 @@ import { getNamespaces, getReplicaSets } from "../api/index";
 import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
 import SortableHeader from "../components/SortableHeader";
+import SearchBar from "../components/SearchBar";
 
 export default function ReplicasPage() {
     const [replicasets, setReplicaSets] = useState([]);
@@ -11,6 +12,7 @@ export default function ReplicasPage() {
       "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
+    const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -73,14 +75,19 @@ export default function ReplicasPage() {
       setReplicaSets((old) => sortObjects(old, sortBy));
     }
 
+    const filteredReplicas = replicasets.filter((replica) =>
+      replica.metadata.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
     <div className="space-y-6 p-4 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">ReplicaSets</h2>
-        <div>
-          <p className="text-lg">{`${replicasets.length} Items`}</p>
+        
+        <div className="flex items-center gap-4">
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+          <div><p className="text-lg">{`${filteredReplicas.length} Items`}</p></div>
         </div>
         {/* ---- Namespace Selector ---- */}
         <NamespaceSelector currentNS={currentNs} setCurrentNS={setCurrentNS} namespaces={namespaces} />
@@ -107,7 +114,7 @@ export default function ReplicasPage() {
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {replicasets.map((replicaset) => (
+              {filteredReplicas.map((replicaset) => (
                 <tr key={`${replicaset.metadata.name}`} className="hover:bg-gray-800/50">
                   <td className="px-4 py-3 font-medium">{replicaset.metadata.name}</td>
                   <td className="px-4 py-3 font-medium">{replicaset.metadata.namespace}</td>

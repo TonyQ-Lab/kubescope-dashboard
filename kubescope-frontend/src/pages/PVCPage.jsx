@@ -3,6 +3,7 @@ import { getPVCs, getNamespaces } from "../api/index";
 import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector"
 import SortableHeader from "../components/SortableHeader";
+import SearchBar from "../components/SearchBar";
 
 export default function PVCPage() {
     const [pvcs, setPVCs] = useState([]);
@@ -12,6 +13,7 @@ export default function PVCPage() {
       "default"
     ])
     const [currentNs, setCurrentNS] = useState("default");
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
       async function fetchNamespaces() {
@@ -90,13 +92,18 @@ export default function PVCPage() {
       }
     }
 
+    const filteredPVCs = pvcs.filter((pvc) =>
+      pvc.metadata.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return ( 
     <div className="space-y-6 p-4 h-full w-full">
       {/* ---- Header ---- */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">PersistentVolumeClaims</h2>
-        <div>
-          <p className="text-lg">{`${pvcs.length} Items`}</p>
+        <div className="flex items-center gap-4">
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+          <div><p className="text-lg">{`${filteredPVCs.length} Items`}</p></div>
         </div>
         {/* ---- Namespace Selector ---- */}
         <NamespaceSelector currentNS={currentNs} setCurrentNS={setCurrentNS} namespaces={namespaces} />
@@ -123,7 +130,7 @@ export default function PVCPage() {
             </thead>
 
             <tbody className="divide-y divide-gray-800">
-              {pvcs.map((persistentvolumeclaim) => (
+              {filteredPVCs.map((persistentvolumeclaim) => (
                 <tr key={`${persistentvolumeclaim.metadata.name}`} className="hover:bg-gray-800/50">
                   <td className="px-4 py-3 font-medium">{persistentvolumeclaim.metadata.name}</td>
                   <td className="px-4 py-3 text-gray-400">{persistentvolumeclaim.metadata.namespace}</td>
