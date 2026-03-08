@@ -104,7 +104,7 @@ function EventsPage() {
         <h2 className="text-2xl font-semibold">Events</h2>
         <div className="flex items-center gap-4">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search by message..."/>
-          <div><p className="text-lg">{`${events.length} Items`}</p></div>
+          <div><p className="text-lg">{`${filteredEvents.length} Items`}</p></div>
         </div>
         {/* ---- Namespace Selector ---- */}
         <NamespaceSelector currentNS={currentNs} setCurrentNS={setCurrentNS} namespaces={namespaces} />
