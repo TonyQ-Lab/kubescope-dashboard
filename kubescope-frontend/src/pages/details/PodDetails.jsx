@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { X } from "lucide-react"
 
 const PANEL_MIN_HEIGHT = 150;
 const PANEL_MAX_HEIGHT = 600;
@@ -14,7 +15,7 @@ function StatusBadge({ status }) {
   };
   const cls = colorMap[status] ?? "bg-gray-500/20 text-gray-400";
   return (
-    <span className={`px-2 py-0.5 rounded text-xs font-medium ${cls}`}>
+    <span className={`px-2 py-0.5 rounded text-md font-medium ${cls}`}>
       {status}
     </span>
   );
@@ -23,7 +24,7 @@ function StatusBadge({ status }) {
 function Section({ title, children }) {
   return (
     <div className="mb-5">
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2 px-4">
+      <h3 className="text-md font-semibold uppercase tracking-widest text-gray-500 mb-2 px-4">
         {title}
       </h3>
       {children}
@@ -34,8 +35,8 @@ function Section({ title, children }) {
 function KVRow({ label, value }) {
   return (
     <div className="flex items-start gap-4 px-4 py-1.5 hover:bg-gray-800/40 group">
-      <span className="text-xs text-gray-500 w-36 shrink-0 pt-0.5">{label}</span>
-      <span className="text-xs text-gray-200 break-all font-mono">{value ?? "—"}</span>
+      <span className="text-md text-gray-500 w-36 shrink-0 pt-0.5">{label}</span>
+      <span className="text-md text-gray-200 break-all font-mono">{value ?? "—"}</span>
     </div>
   );
 }
@@ -52,12 +53,12 @@ function ContainerCard({ container, status }) {
   return (
     <div className="mx-4 mb-2 rounded-md border border-gray-700/60 bg-gray-800/30 px-3 py-2">
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-sm font-medium text-gray-200">{container.name}</span>
-        <span className={`text-xs font-mono ${stateColor}`}>{stateKey}</span>
+        <span className="text-md font-medium text-gray-200">{container.name}</span>
+        <span className={`text-md font-mono ${stateColor}`}>{stateKey}</span>
       </div>
-      <div className="text-xs text-gray-500 font-mono truncate mb-1">{container.image}</div>
+      <div className="text-md text-gray-500 font-mono truncate mb-1">{container.image}</div>
       {status && (
-        <div className="flex gap-4 mt-1.5 text-xs text-gray-400">
+        <div className="flex gap-4 mt-1.5 text-md text-gray-400">
           <span>
             Ready:{" "}
             <span className={status.ready ? "text-green-400" : "text-red-400"}>
@@ -73,7 +74,7 @@ function ContainerCard({ container, status }) {
       {container.ports?.length > 0 && (
         <div className="flex gap-2 mt-1.5 flex-wrap">
           {container.ports.map((p, i) => (
-            <span key={i} className="text-xs bg-gray-700/50 text-gray-300 px-1.5 py-0.5 rounded font-mono">
+            <span key={i} className="text-md bg-gray-700/50 text-gray-300 px-1.5 py-0.5 rounded font-mono">
               {p.containerPort}/{p.protocol ?? "TCP"}
             </span>
           ))}
@@ -154,8 +155,8 @@ export default function PodDetails({ pod, onClose }) {
       {/* Title bar */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-gray-700/70 shrink-0">
         <div className="flex items-center gap-3 min-w-0">
-          <span className="text-sm font-semibold text-gray-100 truncate">{meta.name}</span>
-          <span className="text-xs text-gray-500 shrink-0">{meta.namespace}</span>
+          <span className="text-md font-semibold text-gray-100 truncate">{meta.name}</span>
+          <span className="text-md text-gray-500 shrink-0">{meta.namespace}</span>
           <StatusBadge status={status?.phase} />
         </div>
         <button
@@ -163,7 +164,7 @@ export default function PodDetails({ pod, onClose }) {
           className="ml-4 text-gray-500 hover:text-gray-200 transition-colors shrink-0 text-lg leading-none"
           title="Close"
         >
-          ×
+          <X />
         </button>
       </div>
 
@@ -173,7 +174,7 @@ export default function PodDetails({ pod, onClose }) {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-3 py-2 text-xs font-medium capitalize transition-colors border-b-2 -mb-px ${
+            className={`px-3 py-2 text-md font-medium capitalize transition-colors border-b-2 -mb-px ${
               tab === t
                 ? "border-blue-500 text-blue-400"
                 : "border-transparent text-gray-500 hover:text-gray-300"
@@ -223,14 +224,14 @@ export default function PodDetails({ pod, onClose }) {
               {labels.length ? (
                 labels.map(([k, v]) => <KVRow key={k} label={k} value={v} />)
               ) : (
-                <p className="px-4 text-xs text-gray-500">No labels</p>
+                <p className="px-4 text-md text-gray-500">No labels</p>
               )}
             </Section>
             <Section title={`Annotations (${annotations.length})`}>
               {annotations.length ? (
                 annotations.map(([k, v]) => <KVRow key={k} label={k} value={v} />)
               ) : (
-                <p className="px-4 text-xs text-gray-500">No annotations</p>
+                <p className="px-4 text-md text-gray-500">No annotations</p>
               )}
             </Section>
           </>
@@ -245,11 +246,11 @@ export default function PodDetails({ pod, onClose }) {
                     key={c.type}
                     className="flex items-center justify-between rounded-md border border-gray-700/60 bg-gray-800/30 px-3 py-2"
                   >
-                    <span className="text-xs font-medium text-gray-300">{c.type}</span>
+                    <span className="text-md font-medium text-gray-300">{c.type}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs text-gray-500 font-mono">{c.lastTransitionTime?.split("T")[0]}</span>
+                      <span className="text-md text-gray-500 font-mono">{c.lastTransitionTime?.split("T")[0]}</span>
                       <span
-                        className={`text-xs font-semibold ${
+                        className={`text-md font-semibold ${
                           c.status === "True" ? "text-green-400" : "text-red-400"
                         }`}
                       >
@@ -260,7 +261,7 @@ export default function PodDetails({ pod, onClose }) {
                 ))}
               </div>
             ) : (
-              <p className="px-4 text-xs text-gray-500">No conditions available</p>
+              <p className="px-4 text-md text-gray-500">No conditions available</p>
             )}
           </Section>
         )}
