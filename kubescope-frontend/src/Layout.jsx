@@ -7,7 +7,7 @@ export default function Layout({ children }) {
   return (
     <div className="flex h-screen overflow-hidden">
       <SideBar width={sideBarWidth} onResize={setSideBarWidth} />
-      <main className="flex-1 overflow-y-auto lg:px-2">
+      <main className="flex-1 overflow-y-auto">
         {children}
       </main>
     </div>
