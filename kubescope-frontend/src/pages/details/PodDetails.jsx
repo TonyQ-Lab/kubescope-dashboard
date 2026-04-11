@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react"
+import { X } from "lucide-react";
+import { KVRow, Section } from "../../components/Modals";
 
 const PANEL_MIN_HEIGHT = 150;
 const PANEL_MAX_HEIGHT = 600;
@@ -18,26 +19,6 @@ function StatusBadge({ status }) {
     <span className={`px-2 py-0.5 rounded text-md font-medium ${cls}`}>
       {status}
     </span>
-  );
-}
-
-function Section({ title, children }) {
-  return (
-    <div className="mb-5">
-      <h3 className="text-md font-semibold uppercase tracking-widest text-gray-500 mb-2 px-4">
-        {title}
-      </h3>
-      {children}
-    </div>
-  );
-}
-
-function KVRow({ label, value }) {
-  return (
-    <div className="flex items-start gap-4 px-4 py-1.5 hover:bg-gray-800/40 group">
-      <span className="text-md text-gray-500 w-36 shrink-0 pt-0.5">{label}</span>
-      <span className="text-md text-gray-200 break-all font-mono">{value ?? "—"}</span>
-    </div>
   );
 }
 
@@ -150,7 +131,9 @@ export default function PodDetails({ pod, onClose }) {
         onMouseDown={onMouseDown}
         className="h-1.5 w-full cursor-row-resize flex items-center justify-center group shrink-0"
         title="Drag to resize"
-      />
+      >
+        <div className="w-8 h-0.5 rounded-full bg-gray-700 group-hover:bg-gray-500 transition-colors" />
+      </div>
 
       {/* Title bar */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-gray-700/70 shrink-0">
