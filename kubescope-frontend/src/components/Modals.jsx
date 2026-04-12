@@ -17,3 +17,17 @@ export function Section({ title, children }) {
     </div>
   );
 }
+
+export function TolerationRow({ toleration }) {
+  const parts = [toleration.key, toleration.operator, toleration.value]
+    .filter(Boolean)
+    .join(" ");
+  return (
+    <div className="flex items-start gap-4 px-4 py-1.5 hover:bg-gray-800/40">
+      <span className="text-md text-gray-500 break-all w-40 md:w-60 lg:w-96 shrink-0">
+        {toleration.effect ?? "Any"}
+      </span>
+      <span className="text-md text-gray-200 break-all font-mono">{parts || "Tolerate all"}</span>
+    </div>
+  );
+}
