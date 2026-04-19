@@ -130,7 +130,7 @@ export default function DeploysPage() {
     return (
     <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-center justify-between m-4">
+      <div className="flex items-center justify-between p-4 pb-0">
         <h2 className="text-2xl font-semibold">Deployments</h2>
         <div className="flex items-center gap-4">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
@@ -146,7 +146,7 @@ export default function DeploysPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full m-4">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
