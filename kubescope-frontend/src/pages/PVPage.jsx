@@ -118,7 +118,7 @@ export default function PVPage() {
                   <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.storageClassName || "<none>"}</td>
                   <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.capacity.storage || "NaN"}</td>
                   <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.persistentVolumeReclaimPolicy || "<unset>"}</td>
-                  <td className="px-4 py-3 text-gray-400">{getClaim(persistentvolume.spec.claimRef) || "<none>"}</td>
+                  <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.claimRef ? getClaim(persistentvolume.spec.claimRef) : "<none>"}</td>
                   <td className="px-4 py-3 text-gray-400">{countAge(persistentvolume)}</td>
                   <td className="px-4 py-3">
                     <span
