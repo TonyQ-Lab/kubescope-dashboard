@@ -3,12 +3,21 @@ import { getNodes } from "../api/index";
 import { countAge, sortObjects } from "../utils";
 import SortableHeader from "../components/SortableHeader";
 import SearchBar from "../components/SearchBar";
+import NodeDetails from "./details/NodeDetails";
 
 export default function NodesPage() {
     const [nodes, setNodes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
+
+    // Detail modal
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const handleDoubleClick = (item) => {
+      setSelectedItem(item);
+      setIsOpenDetail(true);
+    }
 
     useEffect(() => {
       async function fetchNodes() {
@@ -111,10 +120,10 @@ export default function NodesPage() {
     );
 
     return ( 
-    <div className="space-y-6 p-4 mt-1 h-full w-full">
+    <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-end justify-between">
-        <h2 className="text-2xl font-semibold mr-12">Nodes</h2>
+      <div className="flex items-center justify-between p-4 pb-0">
+        <h2 className="text-2xl font-semibold">Nodes</h2>
         
         <div className="flex items-center gap-4">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
@@ -128,7 +137,7 @@ export default function NodesPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
@@ -143,7 +152,7 @@ export default function NodesPage() {
 
             <tbody className="divide-y divide-gray-800">
               {filteredNodes.map((node) => (
-                <tr key={`${node.metadata.name}`} className="hover:bg-gray-800/50">
+                <tr key={`${node.metadata.name}`} className="cursor-pointer hover:bg-gray-800/50" onDoubleClick={() => handleDoubleClick(node)}>
                   <td className="px-4 py-3 font-medium">{node.metadata.name}</td>
                   <td className="px-4 py-3 text-gray-400 max-w-md">
                     <div className='line-clamp-2'>
@@ -169,6 +178,10 @@ export default function NodesPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isOpenDetail && (
+        <NodeDetails node={selectedItem} onClose={() => setIsOpenDetail(false)} />
       )}
     </div>
     );
