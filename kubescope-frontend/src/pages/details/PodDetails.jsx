@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { KVRow, Section } from "../../components/Modals";
+import YamlEditor from "../../components/YamlEditor";
 
 const PANEL_MIN_HEIGHT = 150;
 const PANEL_MAX_HEIGHT = 600;
@@ -114,7 +115,7 @@ export default function PodDetails({ pod, onClose }) {
     ? Object.entries(meta.annotations).filter(([k]) => !k.startsWith("kubectl.kubernetes.io/last-applied"))
     : [];
 
-  const tabs = ["overview", "containers", "labels", "conditions"];
+  const tabs = ["overview", "containers", "labels", "conditions", "edit"];
 
   return (
     <div
@@ -169,27 +170,25 @@ export default function PodDetails({ pod, onClose }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto py-3">
+      <div className={`flex-1 min-h-0 ${tab === "edit" ? "overflow-hidden" : "overflow-y-auto py-3"}`}>
         {tab === "overview" && (
-          <>
-            <Section title="Metadata">
-              <KVRow label="UID" value={meta.uid} />
-              <KVRow label="Created" value={meta.creationTimestamp} />
-              <KVRow label="Node" value={spec?.nodeName} />
-              <KVRow label="Service Account" value={spec?.serviceAccountName} />
-              <KVRow label="Pod IP" value={status?.podIP} />
-              <KVRow label="Host IP" value={status?.hostIP} />
-              <KVRow
-                label="Owner"
-                value={
-                  meta.ownerReferences?.length
-                    ? `${meta.ownerReferences[0].kind}/${meta.ownerReferences[0].name}`
-                    : "None"
-                }
-              />
-              <KVRow label="QoS Class" value={status?.qosClass} />
-            </Section>
-          </>
+          <Section title="Metadata">
+            <KVRow label="UID" value={meta.uid} />
+            <KVRow label="Created" value={meta.creationTimestamp} />
+            <KVRow label="Node" value={spec?.nodeName} />
+            <KVRow label="Service Account" value={spec?.serviceAccountName} />
+            <KVRow label="Pod IP" value={status?.podIP} />
+            <KVRow label="Host IP" value={status?.hostIP} />
+            <KVRow
+              label="Owner"
+              value={
+                meta.ownerReferences?.length
+                  ? `${meta.ownerReferences[0].kind}/${meta.ownerReferences[0].name}`
+                  : "None"
+              }
+            />
+            <KVRow label="QoS Class" value={status?.qosClass} />
+          </Section>
         )}
 
         {tab === "containers" && (
@@ -247,6 +246,10 @@ export default function PodDetails({ pod, onClose }) {
               <p className="px-4 text-md text-gray-500">No conditions available</p>
             )}
           </Section>
+        )}
+
+        {tab === "edit" && (
+          <YamlEditor pod={pod} onSaveSuccess={() => {}} />
         )}
       </div>
     </div>
