@@ -4,6 +4,7 @@ import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
 import SortableHeader from "../components/SortableHeader";
 import SearchBar from "../components/SearchBar";
+import StatefulDetails from "./details/StatefulDetails";
 
 export default function StatefulPage() {
     const [statefulsets, setStatefulSets] = useState([]);
@@ -14,6 +15,14 @@ export default function StatefulPage() {
     const [currentNs, setCurrentNS] = useState("default");
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
+
+    // Detail modal
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const handleDoubleClick = (item) => {
+      setSelectedItem(item);
+      setIsOpenDetail(true);
+    }
 
     useEffect(() => {
       async function fetchNamespaces() {
@@ -82,9 +91,9 @@ export default function StatefulPage() {
     );
 
     return (
-    <div className="space-y-6 p-4 h-full w-full">
+    <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 pb-0">
         <h2 className="text-2xl font-semibold">StatefulSets</h2>
 
         <div className="flex items-center gap-4">
@@ -101,7 +110,7 @@ export default function StatefulPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
@@ -116,7 +125,7 @@ export default function StatefulPage() {
 
             <tbody className="divide-y divide-gray-800">
               {filteredStatefulsets.map((statefulset) => (
-                <tr key={`${statefulset.metadata.name}`} className="hover:bg-gray-800/50">
+                <tr key={`${statefulset.metadata.name}`} className="cursor-pointer hover:bg-gray-800/50" onDoubleClick={() => handleDoubleClick(statefulset)}>
                   <td className="px-4 py-3 font-medium">{statefulset.metadata.name}</td>
                   <td className="px-4 py-3 font-medium">{statefulset.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{`${statefulset.status.readyReplicas}/${statefulset.spec.replicas}`}</td>
@@ -128,6 +137,10 @@ export default function StatefulPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isOpenDetail && (
+        <StatefulDetails statefulSet={selectedItem} onClose={() => setIsOpenDetail(false)} />
       )}
     </div>
     );

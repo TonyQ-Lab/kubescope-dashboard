@@ -3,12 +3,21 @@ import { getStorageClasses } from "../api/index";
 import { countAge, sortObjects } from "../utils";
 import SortableHeader from "../components/SortableHeader";
 import SearchBar from "../components/SearchBar";
+import StorageClassDetails from "./details/StorageClassDetails";
 
 export default function StorageClassesPage() {
     const [storageclasses, setStorageclasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+
+    // Detail modal
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const handleDoubleClick = (item) => {
+      setSelectedItem(item);
+      setIsOpenDetail(true);
+    }
 
     useEffect(() => {
       async function fetchSCs() {
@@ -60,10 +69,10 @@ export default function StorageClassesPage() {
     );
 
     return ( 
-    <div className="space-y-6 p-4 mt-1 h-full w-full">
+    <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-end justify-between">
-        <h2 className="text-2xl font-semibold mr-12">StorageClasses</h2>
+      <div className="flex items-end justify-between p-4 pb-0">
+        <h2 className="text-2xl font-semibold">StorageClasses</h2>
         <div className="flex items-center gap-4">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
           <div><p className="text-lg">{`${filteredSCs.length} Items`}</p></div>
@@ -76,7 +85,7 @@ export default function StorageClassesPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
@@ -91,7 +100,7 @@ export default function StorageClassesPage() {
 
             <tbody className="divide-y divide-gray-800">
               {filteredSCs.map((storageclass) => (
-                <tr key={`${storageclass.metadata.name}`} className="hover:bg-gray-800/50">
+                <tr key={`${storageclass.metadata.name}`} className="cursor-pointer hover:bg-gray-800/50" onDoubleClick={() => handleDoubleClick(storageclass)}>
                   <td className="px-4 py-3 font-medium">{storageclass.metadata.name}</td>
                   <td className="px-4 py-3 text-gray-400">{storageclass.provisioner || "<none>"}</td>
                   <td className="px-4 py-3 text-gray-400">{storageclass.reclaimPolicy || "<unset>"}</td>
@@ -103,6 +112,10 @@ export default function StorageClassesPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isOpenDetail && (
+        <StorageClassDetails storageClass={selectedItem} onClose={() => setIsOpenDetail(false)} />
       )}
     </div>
     );

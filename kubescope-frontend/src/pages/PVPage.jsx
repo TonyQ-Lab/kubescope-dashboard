@@ -3,6 +3,7 @@ import { getPVs } from "../api/index";
 import { countAge, sortObjects } from "../utils";
 import SortableHeader from "../components/SortableHeader";
 import SearchBar from "../components/SearchBar";
+import PersistentVolumeDetails from "./details/PersistentVolumeDetails";
 
 export default function PVPage() {
     const [pvs, setPVs] = useState([]);
@@ -10,6 +11,13 @@ export default function PVPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
 
+    // Detail modal
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const handleDoubleClick = (item) => {
+      setSelectedItem(item);
+      setIsOpenDetail(true);
+    }
     useEffect(() => {
       async function fetchPVs() {
         try {
@@ -49,11 +57,6 @@ export default function PVPage() {
       setPVs((old) => sortObjects(old, sortBy));
     }
 
-    // function getAccessModes(pv) {
-    //   const accessmodes = pv.spec.accessModes;
-    //   return accessmodes.join(", ");
-    // }
-
     function getClaim(claimRef) {
       return `${claimRef.namespace}/${claimRef.name}`;
     }
@@ -78,9 +81,9 @@ export default function PVPage() {
     );
 
     return ( 
-    <div className="space-y-6 p-4 mt-1 h-full w-full">
+    <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-end justify-between">
+      <div className="flex items-end justify-between p-4 pb-0">
         <h2 className="text-2xl font-semibold mr-12">PersistentVolumes</h2>
         <div className="flex items-center gap-4">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
@@ -94,7 +97,7 @@ export default function PVPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
@@ -110,12 +113,12 @@ export default function PVPage() {
 
             <tbody className="divide-y divide-gray-800">
               {filteredPVs.map((persistentvolume) => (
-                <tr key={`${persistentvolume.metadata.name}`} className="hover:bg-gray-800/50">
+                <tr key={`${persistentvolume.metadata.name}`} className="cursor-pointer hover:bg-gray-800/50" onDoubleClick={() => handleDoubleClick(persistentvolume)}>
                   <td className="px-4 py-3 font-medium">{persistentvolume.metadata.name}</td>
                   <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.storageClassName || "<none>"}</td>
                   <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.capacity.storage || "NaN"}</td>
                   <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.persistentVolumeReclaimPolicy || "<unset>"}</td>
-                  <td className="px-4 py-3 text-gray-400">{getClaim(persistentvolume.spec.claimRef) || "<none>"}</td>
+                  <td className="px-4 py-3 text-gray-400">{persistentvolume.spec.claimRef ? getClaim(persistentvolume.spec.claimRef) : "<none>"}</td>
                   <td className="px-4 py-3 text-gray-400">{countAge(persistentvolume)}</td>
                   <td className="px-4 py-3">
                     <span
@@ -131,6 +134,10 @@ export default function PVPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isOpenDetail && (
+        <PersistentVolumeDetails pv={selectedItem} onClose={() => setIsOpenDetail(false)} />
       )}
     </div>
     );

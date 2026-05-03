@@ -4,6 +4,7 @@ import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
 import SortableHeader from "../components/SortableHeader";
 import SearchBar from "../components/SearchBar";
+import DeployDetails from "./details/DeployDetails";
 
 export default function DeploysPage() {
     const [deployments, setDeployments] = useState([]);
@@ -14,6 +15,14 @@ export default function DeploysPage() {
     const [currentNs, setCurrentNS] = useState("default");
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
+
+    // Detail modal
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const handleDoubleClick = (item) => {
+      setSelectedItem(item);
+      setIsOpenDetail(true);
+    }
 
     useEffect(() => {
       async function fetchNamespaces() {
@@ -119,9 +128,9 @@ export default function DeploysPage() {
     );
 
     return (
-    <div className="space-y-6 p-4 h-full w-full">
+    <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 pb-0">
         <h2 className="text-2xl font-semibold">Deployments</h2>
         <div className="flex items-center gap-4">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
@@ -137,7 +146,7 @@ export default function DeploysPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
@@ -153,7 +162,7 @@ export default function DeploysPage() {
 
             <tbody className="divide-y divide-gray-800">
               {filteredDeploys.map((deployment) => (
-                <tr key={`${deployment.metadata.name}`} className="hover:bg-gray-800/50">
+                <tr key={`${deployment.metadata.uid}`} className="cursor-pointer hover:bg-gray-800/50" onDoubleClick={() => handleDoubleClick(deployment)}>
                   <td className="px-4 py-3 font-medium">{deployment.metadata.name}</td>
                   <td className="px-4 py-3 font-medium">{deployment.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{`${deployment.status.readyReplicas}/${deployment.spec.replicas}`}</td>
@@ -174,6 +183,10 @@ export default function DeploysPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isOpenDetail && (
+        <DeployDetails deployment={selectedItem} onClose={() => setIsOpenDetail(false)} />
       )}
     </div>
     );

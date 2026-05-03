@@ -4,6 +4,7 @@ import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
 import SortableHeader from "../components/SortableHeader";
 import SearchBar from "../components/SearchBar";
+import DaemonDetails from "./details/DaemonDetails";
 
 export default function DaemonsPage() {
     const [daemonsets, setDaemonSets] = useState([]);
@@ -14,6 +15,14 @@ export default function DaemonsPage() {
     const [currentNs, setCurrentNS] = useState("default");
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
+
+    // Detail modal
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const handleDoubleClick = (item) => {
+      setSelectedItem(item);
+      setIsOpenDetail(true);
+    }
 
     useEffect(() => {
       async function fetchNamespaces() {
@@ -80,9 +89,9 @@ export default function DaemonsPage() {
     );
 
     return (
-    <div className="space-y-6 p-4 h-full w-full">
+    <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 pb-0">
         <h2 className="text-2xl font-semibold">DaemonSets</h2>
 
         <div className="flex items-center gap-4">
@@ -99,7 +108,7 @@ export default function DaemonsPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
@@ -114,7 +123,7 @@ export default function DaemonsPage() {
 
             <tbody className="divide-y divide-gray-800">
               {filteredDaemons.map((daemonset) => (
-                <tr key={`${daemonset.metadata.name}`} className="hover:bg-gray-800/50">
+                <tr key={`${daemonset.metadata.name}`} className="cursor-pointer hover:bg-gray-800/50" onDoubleClick={() => handleDoubleClick(daemonset)}>
                   <td className="px-4 py-3 font-medium">{daemonset.metadata.name}</td>
                   <td className="px-4 py-3 font-medium">{daemonset.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{`${daemonset.status.currentNumberScheduled || 0}/${daemonset.status.desiredNumberScheduled || 0}`}</td>
@@ -126,6 +135,10 @@ export default function DaemonsPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isOpenDetail && (
+        <DaemonDetails daemonSet={selectedItem} onClose={() => setIsOpenDetail(false)} />
       )}
     </div>
     );

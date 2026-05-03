@@ -4,6 +4,7 @@ import { countAge, sortObjects } from "../utils";
 import NamespaceSelector from "../components/NamespaceSelector";
 import SortableHeader from "../components/SortableHeader";
 import SearchBar from "../components/SearchBar";
+import PodDetails from "./details/PodDetails";
 
 function PodsPage() {
     const [pods, setPods] = useState([]);
@@ -14,6 +15,14 @@ function PodsPage() {
     const [currentNs, setCurrentNS] = useState("default");
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
+
+    // Detail modal
+    const [selectedPod, setSelectedPod] = useState(null);
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const handleDoubleClick = (pod) => {
+      setSelectedPod(pod);
+      setIsOpenDetail(true);
+    }
 
     useEffect(() => {
       async function fetchNamespaces() {
@@ -116,9 +125,9 @@ function PodsPage() {
     );
 
     return ( 
-    <div className="space-y-6 p-4 h-full w-full">
+    <div className="space-y-6 h-full w-full relative">
       {/* ---- Header ---- */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 pb-0">
         <h2 className="text-2xl font-semibold">Pods</h2>
         <div className="flex items-center gap-4">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
@@ -134,7 +143,7 @@ function PodsPage() {
       ) : error !== null ? (
         <p className="text-gray-400">{`${error}`}</p>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto w-full px-4">
           <table className="w-full text-left text-sm min-w-max">
             <thead className="bg-gray-800/50 text-gray-300">
               <tr>
@@ -150,7 +159,7 @@ function PodsPage() {
 
             <tbody className="divide-y divide-gray-800">
               {filteredPods.map((pod) => (
-                <tr key={`${pod.metadata.name}`} className="hover:bg-gray-800/50">
+                <tr key={`${pod.metadata.uid}`} className="cursor-pointer hover:bg-gray-800/50" onDoubleClick={() => handleDoubleClick(pod)}>
                   <td className="px-4 py-3 font-medium">{pod.metadata.name}</td>
                   <td className="px-4 py-3 font-medium">{pod.metadata.namespace}</td>
                   <td className="px-4 py-3 text-gray-400">{`${countReady(pod)}/${pod.status.containerStatuses.length}`}</td>
@@ -173,6 +182,10 @@ function PodsPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isOpenDetail && (
+        <PodDetails pod={selectedPod} onClose={() => setIsOpenDetail(false)} />
       )}
     </div>
     );
