@@ -3,8 +3,8 @@ import { Save, RotateCcw, CheckCircle, AlertCircle, Loader2 } from "lucide-react
 import yaml from "js-yaml";
 
 
-export default function YamlEditor({ pod, onSaveSuccess }) {
-  const initialYaml = yaml.dump(pod, { indent: 2, lineWidth: -1 });
+export default function YamlEditor({ type, item, onSaveSuccess }) {
+  const initialYaml = yaml.dump(item, { indent: 2, lineWidth: -1 });
   const [value, setValue] = useState(initialYaml);
   const [parseError, setParseError] = useState(null);
   const [saveState, setSaveState] = useState("idle"); // idle | saving | success | error
@@ -23,7 +23,7 @@ export default function YamlEditor({ pod, onSaveSuccess }) {
     }
   }
 
-  // Reset to the original pod YAML
+  // Reset to the original item YAML
   function handleReset() {
     setValue(initialYaml);
     setParseError(null);
@@ -61,8 +61,34 @@ export default function YamlEditor({ pod, onSaveSuccess }) {
     setSaveError(null);
 
     try {
-      const { name, namespace } = pod.metadata;
-      const res = await fetch(`/api/pods/?namespace=${namespace}&name=${name}`, {
+      const { name, namespace } = item.metadata;
+
+      let api;
+      switch(type) {
+        case 'pod':
+          api = `/api/pods/?namespace=${namespace}&name=${name}`;
+          break;
+        case 'deployment':
+          api = `/api/deployments/?namespace=${namespace}&name=${name}`;
+          break;
+        case 'replicaset':
+          api = `/api/deployments/?namespace=${namespace}&name=${name}`;
+          break;
+        case 'daemonset':
+          api = `/api/deployments/?namespace=${namespace}&name=${name}`;
+          break;
+        case 'statefulset':
+          api = `/api/deployments/?namespace=${namespace}&name=${name}`;
+          break;
+        case 'deployment':
+          api = `/api/deployments/?namespace=${namespace}&name=${name}`;
+          break;
+        case 'deployment':
+          api = `/api/deployments/?namespace=${namespace}&name=${name}`;
+          break;
+      }
+
+      const res = await fetch(api, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ yaml: value }),

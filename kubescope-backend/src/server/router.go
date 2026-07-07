@@ -22,13 +22,15 @@ func NewRouter(
 		// Workload
 		api.GET("/nodes", nodeHandler.HandleGetNodes)
 		api.GET("/namespaces", namespaceHandler.HandleGetNamespaces)
-		api.GET("/deployments", workloadHandler.HandleGetDeployments)
 		api.GET("/daemonsets", workloadHandler.HandleGetDaemonSets)
 		api.GET("/replicasets", workloadHandler.HandleGetReplicaSets)
 		api.GET("/statefulsets", workloadHandler.HandleGetStatefulSets)
 
 		api.GET("/pods", workloadHandler.HandleGetPods)
 		api.PUT("/pods", workloadHandler.HandleUpdatePod)
+
+		api.GET("/deployments", workloadHandler.HandleGetDeployments)
+		api.PUT("/deployments", workloadHandler.HandleUpdateDeployment)
 
 		// Metrics
 		api.GET("/nodemetrics", metricHandler.HandleNodeMetrics)

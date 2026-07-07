@@ -14,5 +14,23 @@ func GetDeployments(client *kubernetes.Clientset, namespace string) ([]appsv1.De
 	if err != nil {
 		log.Fatalf("Failed to get the list of deployments: %v", err)
 	}
+	for i := range deployments.Items {
+		deployments.Items[i].TypeMeta = metav1.TypeMeta{
+			Kind:       "Deployment",
+			APIVersion: "apps/v1",
+		}
+	}
 	return deployments.Items, nil
+}
+
+func UpdateDeployment(client *kubernetes.Clientset, namespace string, deploy appsv1.Deployment) (appsv1.Deployment, error) {
+	updated, err := client.AppsV1().Deployments(namespace).Update(
+		context.TODO(),
+		&deploy,
+		metav1.UpdateOptions{},
+	)
+	if err != nil {
+		log.Fatalf("Failed to update deployment: %v", err)
+	}
+	return *updated, nil
 }

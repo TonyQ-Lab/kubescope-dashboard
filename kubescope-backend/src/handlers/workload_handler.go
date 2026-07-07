@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/yaml"
 )
@@ -15,7 +16,7 @@ type WorkloadHandler struct {
 	K8s *k8s.Manager
 }
 
-// updateResourceRequest is the JSON body expected by HandleUpdatePod.
+// updateResourceRequest is the JSON body expected by HandleUpdate functions
 type updateResourceRequest struct {
 	YAML string `json:"yaml" binding:"required"`
 }
@@ -106,6 +107,59 @@ func (h *WorkloadHandler) HandleGetDeployments(c *gin.Context) {
 	c.JSON(http.StatusOK, deployments)
 }
 
+func (h *WorkloadHandler) HandleUpdateDeployment(c *gin.Context) {
+	ns := c.DefaultQuery("namespace", "default")
+	deployName := c.Query("name")
+
+	if deployName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query param 'name' is required"})
+		return
+	}
+
+	var req updateResourceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body: " + err.Error()})
+		return
+	}
+
+	// Convert YAML → JSON → typed Pod struct.
+	// sigs.k8s.io/yaml is already a transitive k8s dependency.
+	jsonBytes, err := yaml.YAMLToJSON([]byte(req.YAML))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid YAML: " + err.Error()})
+		return
+	}
+
+	var deployment appsv1.Deployment
+	if err := json.Unmarshal(jsonBytes, &deployment); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "YAML does not represent a valid Pod: " + err.Error()})
+		return
+	}
+
+	// Guard: identity in the YAML must match the query params to prevent
+	// accidental cross-namespace or cross-resource writes.
+	if deployment.Namespace != ns {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("namespace mismatch: query has %q but YAML has %q", ns, deployment.Namespace),
+		})
+		return
+	}
+	if deployment.Name != deployName {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("name mismatch: query has %q but YAML has %q", deployName, deployment.Name),
+		})
+		return
+	}
+
+	updated, err := k8s.UpdateDeployment(h.K8s.Clientset, ns, deployment)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update pod: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updated)
+}
+
 func (h *WorkloadHandler) HandleGetReplicaSets(c *gin.Context) {
 	ns := c.DefaultQuery("namespace", "default")
 
@@ -116,6 +170,59 @@ func (h *WorkloadHandler) HandleGetReplicaSets(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, replicasets)
+}
+
+func (h *WorkloadHandler) HandleUpdateReplicaSet(c *gin.Context) {
+	ns := c.DefaultQuery("namespace", "default")
+	rsName := c.Query("name")
+
+	if rsName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query param 'name' is required"})
+		return
+	}
+
+	var req updateResourceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body: " + err.Error()})
+		return
+	}
+
+	// Convert YAML → JSON → typed struct.
+	// sigs.k8s.io/yaml is already a transitive k8s dependency.
+	jsonBytes, err := yaml.YAMLToJSON([]byte(req.YAML))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid YAML: " + err.Error()})
+		return
+	}
+
+	var replicaset appsv1.ReplicaSet
+	if err := json.Unmarshal(jsonBytes, &replicaset); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "YAML does not represent a valid resource: " + err.Error()})
+		return
+	}
+
+	// Guard: identity in the YAML must match the query params to prevent
+	// accidental cross-namespace or cross-resource writes.
+	if replicaset.Namespace != ns {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("namespace mismatch: query has %q but YAML has %q", ns, replicaset.Namespace),
+		})
+		return
+	}
+	if replicaset.Name != rsName {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("name mismatch: query has %q but YAML has %q", rsName, replicaset.Name),
+		})
+		return
+	}
+
+	updated, err := k8s.UpdateReplicaSet(h.K8s.Clientset, ns, replicaset)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update replicaset: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updated)
 }
 
 func (h *WorkloadHandler) HandleGetDaemonSets(c *gin.Context) {
@@ -130,6 +237,59 @@ func (h *WorkloadHandler) HandleGetDaemonSets(c *gin.Context) {
 	c.JSON(http.StatusOK, daemonsets)
 }
 
+func (h *WorkloadHandler) HandleUpdateDaemonSet(c *gin.Context) {
+	ns := c.DefaultQuery("namespace", "default")
+	dsName := c.Query("name")
+
+	if dsName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query param 'name' is required"})
+		return
+	}
+
+	var req updateResourceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body: " + err.Error()})
+		return
+	}
+
+	// Convert YAML → JSON → typed struct.
+	// sigs.k8s.io/yaml is already a transitive k8s dependency.
+	jsonBytes, err := yaml.YAMLToJSON([]byte(req.YAML))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid YAML: " + err.Error()})
+		return
+	}
+
+	var daemonset appsv1.DaemonSet
+	if err := json.Unmarshal(jsonBytes, &daemonset); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "YAML does not represent a valid resource: " + err.Error()})
+		return
+	}
+
+	// Guard: identity in the YAML must match the query params to prevent
+	// accidental cross-namespace or cross-resource writes.
+	if daemonset.Namespace != ns {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("namespace mismatch: query has %q but YAML has %q", ns, daemonset.Namespace),
+		})
+		return
+	}
+	if daemonset.Name != dsName {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("name mismatch: query has %q but YAML has %q", dsName, daemonset.Name),
+		})
+		return
+	}
+
+	updated, err := k8s.UpdateDaemonSet(h.K8s.Clientset, ns, daemonset)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update daemonset: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updated)
+}
+
 func (h *WorkloadHandler) HandleGetStatefulSets(c *gin.Context) {
 	ns := c.DefaultQuery("namespace", "default")
 
@@ -140,4 +300,57 @@ func (h *WorkloadHandler) HandleGetStatefulSets(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, statefulsets)
+}
+
+func (h *WorkloadHandler) HandleUpdateStatefulSet(c *gin.Context) {
+	ns := c.DefaultQuery("namespace", "default")
+	ssName := c.Query("name")
+
+	if ssName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "query param 'name' is required"})
+		return
+	}
+
+	var req updateResourceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body: " + err.Error()})
+		return
+	}
+
+	// Convert YAML → JSON → typed struct.
+	// sigs.k8s.io/yaml is already a transitive k8s dependency.
+	jsonBytes, err := yaml.YAMLToJSON([]byte(req.YAML))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid YAML: " + err.Error()})
+		return
+	}
+
+	var statefulset appsv1.StatefulSet
+	if err := json.Unmarshal(jsonBytes, &statefulset); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "YAML does not represent a valid resource: " + err.Error()})
+		return
+	}
+
+	// Guard: identity in the YAML must match the query params to prevent
+	// accidental cross-namespace or cross-resource writes.
+	if statefulset.Namespace != ns {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("namespace mismatch: query has %q but YAML has %q", ns, statefulset.Namespace),
+		})
+		return
+	}
+	if statefulset.Name != ssName {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("name mismatch: query has %q but YAML has %q", ssName, statefulset.Name),
+		})
+		return
+	}
+
+	updated, err := k8s.UpdateStatefulSet(h.K8s.Clientset, ns, statefulset)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update statefulset: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updated)
 }

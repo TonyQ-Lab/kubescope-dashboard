@@ -249,7 +249,7 @@ export default function PodDetails({ pod, onClose }) {
         )}
 
         {tab === "edit" && (
-          <YamlEditor pod={pod} onSaveSuccess={() => {}} />
+          <YamlEditor type="pod" item={pod} />
         )}
       </div>
     </div>

@@ -14,5 +14,23 @@ func GetReplicaSets(client *kubernetes.Clientset, namespace string) ([]appsv1.Re
 	if err != nil {
 		log.Fatalf("Failed to get the list of statefulsets: %v", err)
 	}
+	for i := range replicasets.Items {
+		replicasets.Items[i].TypeMeta = metav1.TypeMeta{
+			Kind:       "ReplicaSet",
+			APIVersion: "apps/v1",
+		}
+	}
 	return replicasets.Items, nil
+}
+
+func UpdateReplicaSet(client *kubernetes.Clientset, namespace string, replicaset appsv1.ReplicaSet) (appsv1.ReplicaSet, error) {
+	updated, err := client.AppsV1().ReplicaSets(namespace).Update(
+		context.TODO(),
+		&replicaset,
+		metav1.UpdateOptions{},
+	)
+	if err != nil {
+		log.Fatalf("Failed to update ReplicaSet: %v", err)
+	}
+	return *updated, nil
 }

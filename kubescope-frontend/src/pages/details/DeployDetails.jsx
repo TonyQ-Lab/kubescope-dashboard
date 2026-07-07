@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { KVRow, Section } from "../../components/Modals";
+import YamlEditor from "../../components/YamlEditor";
 
 const PANEL_MIN_HEIGHT = 150;
 const PANEL_MAX_HEIGHT = 600;
@@ -156,7 +157,7 @@ export default function DeployDetails({ deployment, onClose }) {
 
   const conditions = status?.conditions ?? [];
 
-  const tabs = ["overview", "containers", "strategy", "labels", "conditions"];
+  const tabs = ["overview", "containers", "strategy", "labels", "conditions", "edit"];
 
   return (
     <div
@@ -211,7 +212,7 @@ export default function DeployDetails({ deployment, onClose }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto py-3">
+      <div className={`flex-1 min-h-0 ${tab === "edit" ? "overflow-hidden" : "overflow-y-auto py-3"}`}>
 
         {tab === "overview" && (
           <>
@@ -339,6 +340,10 @@ export default function DeployDetails({ deployment, onClose }) {
               <p className="px-4 text-md text-gray-500">No conditions available</p>
             )}
           </Section>
+        )}
+
+        {tab === "edit" && (
+          <YamlEditor type="deployment" item={deployment} />
         )}
       </div>
     </div>

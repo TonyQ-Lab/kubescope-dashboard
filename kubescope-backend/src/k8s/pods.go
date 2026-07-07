@@ -16,8 +16,8 @@ func GetPods(client *kubernetes.Clientset, namespace string) ([]v1.Pod, error) {
 	}
 	for i := range pods.Items {
 		pods.Items[i].TypeMeta = metav1.TypeMeta{
-			APIVersion: "v1",
 			Kind:       "Pod",
+			APIVersion: "v1",
 		}
 	}
 	return pods.Items, nil
